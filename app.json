@@ -1,0 +1,30 @@
+{
+  "application": "aflip",
+  "cloneable": false,
+  "created": {
+    "__class__": "Date",
+    "isoformat": "2011-01-17T04:01:39.828940Z"
+  },
+  "icon": null,
+  "modified": {
+    "__class__": "Date",
+    "isoformat": "2011-01-17T04:01:39.829065Z"
+  },
+  "owner": "grg021",
+  "readers": [
+    "public"
+  ],
+  "referers": [],
+  "sha1": "d1edac8c1b01128a45af7d721b4c1f9ae5ddba1b",
+  "size": 290,
+  "tags": [
+    "demo",
+    "sample"
+  ],
+  "title": "Pageforest Sample Application",
+  "url": "http://aflip.pageforest.com/",
+  "writers": [
+    "mckoss",
+    "jcrocholl"
+  ]
+}
