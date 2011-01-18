@@ -1,6 +1,10 @@
 namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     var clientLib = namespace.lookup('com.pageforest.client'),
         play, k = 0, cols = 21, rows = 5, page = 0, flag = false;
+	var ctr, strloop = [];
+	var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
+	var chars = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
+	var numbers = "0123456789";
         
     function onReady() {
         $('#input').focus();
@@ -35,7 +39,30 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 			}
 		}
     }
-
+		
+	function loopThrough(a, b, box, j) {
+		var tmpStart, tmpEnd, stype, etype, loopthis;
+		
+		stype = letters;
+		tmpStart = stype.indexOf(a);
+		if(tmpStart < 0) { stype = numbers; tmpStart = numbers.indexOf(a); }
+		if(tmpStart < 0) { stype = chars; tmpStart = chars.indexOf(a); }
+		
+		etype = letters;
+		tmpEnd = etype.indexOf(b);
+		if(tmpEnd < 0) { etype = numbers; tmpEnd = numbers.indexOf(b);}
+		if(tmpEnd < 0) { etype = chars; tmpEnd = chars.indexOf(b);}
+		
+		if(stype !== etype) { loopthis = stype + etype; tmpEnd = tmpEnd + stype.length } 
+			else { loopthis = stype; }
+		strloop[j] = setInterval(function() { 
+			box.text(loopthis.charAt(tmpStart));
+			tmpStart++;
+			if(tmpStart == tmpEnd+1) clearInterval(strloop[j]);
+			if(tmpStart > loopthis.length -1) tmpStart = 0;
+			}, 50);
+		}
+		
     function buildBox(c, r)
     {
       var i, j,
@@ -51,9 +78,14 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 
     function displayText(text, r, c, l)
     {
-      var j;
+      var j, pp = page-1;
       for (j = 0; j < l; j++) {
-        $("#display").find("#r_" + r).find("#c_" + c).text(text[j]);
+		a = $.trim($("#display").find("#r_" + r).find("#c_" + c).text());
+		b = text[j];
+        box = $("#display").find("#r_" + r).find("#c_" + c);
+        box.addClass("page_"+page).removeClass("page_"+pp);
+        if(a === '') $("#display").find("#r_" + r).find("#c_" + c).text(text[j]);
+        else { clearInterval(strloop[j]); loopThrough(a.toUpperCase(), b.toUpperCase(), box, j); }
         c++;
         }
     }
@@ -63,7 +95,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
       flag = true;
       var i, textArr = [], l = text.length, r = 0, ll, c;
       $("#offset").text(page + 1);
-      $("#display").find('.box').text('');
+      
       $("#pageof").show();
       textArr = text.split("\n");
       r = textArr.length - 1;
@@ -74,6 +106,8 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
         displayText($.trim(textArr[i]), r, c, ll);
         r++;
       }
+      var pp = page-1;
+      $("div.page_"+pp).text('');
     }
       
     function initPage() {
