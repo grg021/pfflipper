@@ -5,12 +5,31 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 	var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
 	var chars = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
 	var numbers = "0123456789";
-        
+;(function($) {
+    $.fn.textfill = function(options) {
+        var fontSize = options.maxFontPixels;
+        var ourText = $('span:visible:first', this);
+        var maxHeight = $(this).height();
+        var maxWidth = $(this).width();
+        var textHeight;
+        var textWidth;
+        do {
+                ourText.css('font-size', fontSize);
+                textHeight = ourText.height();
+                textWidth = ourText.width();
+                fontSize = fontSize - 1;
+        } while (textHeight > maxHeight || textWidth > maxWidth && fontSize > 3);
+        return this;
+    }
+})(jQuery);
+
     function onReady() {
         $('#input').focus();
         ns.client = new clientLib.Client(ns);
+        ns.client.saveInterval = 0;  // Turn off auto-save.
         ns.client.addAppBar();
 		buildBox(cols, rows);
+		$("div.box").textfill({ maxFontPixels: 72 });
     }
 
     function setDoc(json) {
@@ -101,13 +120,14 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
       flag = true;
       var i, textArr = [], l = text.length, r = 0, ll, c;
       $("#offset").text(page + 1);
-      
       $("#pageof").show();
       textArr = text.split("\n");
       r = textArr.length - 1;
       r = Math.floor((rows - r) / 2);
-      for(p in prev) clearInterval(strloop[prev[p]]);
+      
+      for(var p in prev) { clearInterval(strloop[prev[p]]); }
       prev = [];
+      
       for (i = 0; i < textArr.length; i++) {
         ll = textArr[i].length;
         c = Math.floor((cols - ll) / 2);
@@ -122,13 +142,13 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     function initPage() {
         var text = $.trim($("#input").val()),
             arr = text.split(/\n-{1,}\n/);
-      $("#limit").text(arr.length);
-      displayPage($.trim(arr[0]));
+		page = 0;
+		$("div.box").text('').removeClass().addClass('box');
+		if(text) { $("#limit").text(arr.length); displayPage($.trim(arr[0])); }
     }
 
     function play() {
       $("#play").hide(1, function() { $("#stop").show(); });
-      page = 0;
       initPage();
       play = setInterval(function() { fwd(true) }, 5000);
     }
@@ -136,7 +156,6 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     function stop() {
       $("#stop").hide(1, function() { $("#play").show(); });
       clearInterval(play);
-      page = 0;
       initPage();
     }
                            
@@ -163,10 +182,9 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     }  
 
     function resetAll() {
-      stop();
       $("#pageof").hide();
-      $("#input").text(''); 
-      $("#display").find('.box').text('');
+      $("#input").text('');
+      stop();
       flag = false;
       ns.client.setDirty(false);
     }
