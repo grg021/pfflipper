@@ -40,7 +40,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		}
     }
 		
-	function loopThrough(a, b, box, j) {
+	function loopThrough(a, b, box, c) {
 		var tmpStart, tmpEnd, stype, etype, loopthis;
 		
 		stype = letters;
@@ -55,12 +55,14 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		
 		if(stype !== etype) { loopthis = stype + etype; tmpEnd = tmpEnd + stype.length } 
 			else { loopthis = stype; }
-		strloop[j] = setInterval(function() { 
+		
+		clearInterval(strloop[c]);
+		strloop[c] = setInterval(function() { 
 			box.text(loopthis.charAt(tmpStart));
 			tmpStart++;
-			if(tmpStart == tmpEnd+1) clearInterval(strloop[j]);
+			if(tmpStart == tmpEnd+1) clearInterval(strloop[c]);
 			if(tmpStart > loopthis.length -1) tmpStart = 0;
-			}, 50);
+			}, 80);
 		}
 		
     function buildBox(c, r)
@@ -76,19 +78,23 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
       }
     }
 
-    function displayText(text, r, c, l)
+    function displayText(text, r, c)
     {
-      var j, pp = page-1;
-      for (j = 0; j < l; j++) {
-		a = $.trim($("#display").find("#r_" + r).find("#c_" + c).text());
-		b = text[j];
-        box = $("#display").find("#r_" + r).find("#c_" + c);
-        box.addClass("page_"+page).removeClass("page_"+pp);
-        if(a === '') $("#display").find("#r_" + r).find("#c_" + c).text(text[j]);
-        else { clearInterval(strloop[j]); loopThrough(a.toUpperCase(), b.toUpperCase(), box, j); }
+      var a, b, j, pp = page-1, ppp = page + 1, box;
+      for (j = 0; j < text.length; j++) {
+		box = $("#display").find("#r_" + r).find("#c_" + c);
+		a = $.trim(box.text()).toUpperCase();
+		b = text[j].toUpperCase();
+        if($.trim(b)) box.removeClass("page_"+pp).removeClass("page_"+ppp).addClass("page_"+page);
+        if(a === '') { 
+			$("#display").find("#r_" + r).find("#c_" + c).text(b);
+        } else {
+			loopThrough(a, b, box, r*cols+c);
+		}
         c++;
         }
     }
+
 
     function displayPage(text)
     {
@@ -103,25 +109,26 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
       for (i = 0; i < textArr.length; i++) {
         ll = textArr[i].length;
         c = Math.floor((cols - ll) / 2);
-        displayText($.trim(textArr[i]), r, c, ll);
+        displayText($.trim(textArr[i]), r, c);
         r++;
       }
-      var pp = page-1;
-      $("div.page_"+pp).text('');
+      var pp = page - 1, ppp = page + 1;
+      $("div.page_"+pp).text('').removeClass("page_"+pp);
+      $("div.page_"+ppp).text('').removeClass("page_"+ppp);
     }
       
     function initPage() {
         var text = $.trim($("#input").val()),
             arr = text.split(/\n-{1,}\n/);
-      displayPage($.trim(arr[0]));
       $("#limit").text(arr.length);
+      displayPage($.trim(arr[0]));
     }
 
     function play() {
       $("#play").hide(1, function() { $("#stop").show(); });
       page = 0;
       initPage();
-      play = setInterval(function() { fwd(true) }, 2000);
+      play = setInterval(function() { fwd(true) }, 5000);
     }
                            
     function stop() {
@@ -147,6 +154,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
       page++;
       loop = (loop === undefined) ? false : true;
       end = (loop) ? 0 : arr.length - 1;
+      if(loop && page > arr.length - 1) $("div.box").text('');
       page = (page > arr.length - 1) ? end : page;
       displayPage($.trim(arr[page]));
       $("#limit").text(arr.length);
