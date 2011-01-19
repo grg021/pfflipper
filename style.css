@@ -95,7 +95,7 @@ input[type="button"] {
 		height: 45px; 
 		width: 36px; 
 		vertical-align: middle;
-		line-height: 110%;
+		line-height: 100%;
 		text-transform: uppercase; 
 		-moz-box-shadow: 1px 1px 5px gray;
 		-webkit-box-shadow: 1px 1px 5px gray;

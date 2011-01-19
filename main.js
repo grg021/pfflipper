@@ -29,7 +29,10 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
         ns.client.saveInterval = 0;  // Turn off auto-save.
         ns.client.addAppBar();
 		buildBox(cols, rows);
+		// resize font based on bounding box size
+		$("div.box > span").text('W');
 		$("div.box").textfill({ maxFontPixels: 72 });
+		$("span.charbox").text('');
     }
 
     function setDoc(json) {
@@ -58,6 +61,20 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 			}
 		}
     }
+    
+    function buildBox(c, r)
+    {
+      var i, j,
+		$charbox = $("<span/>", { "class": "charbox" }),
+        $box = $("<div/>", { "class": "box" }).append($charbox.clone()),
+        $rdiv = $("<div/>", { "class": "rdiv" });
+      for (j = 0; j < c; j++) {
+        $rdiv.append($box.clone().attr('id', "c_" + j));
+      }
+      for (i = 0; i < r; i++) {
+        $("#display").append($rdiv.clone().attr('id', "r_" + i));
+      }
+    }
 		
 	function loopThrough(a, b, box, c) {
 		var tmpStart, tmpEnd, stype, etype, loopthis;
@@ -83,30 +100,17 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 			if(tmpStart > loopthis.length -1) tmpStart = 0;
 			}, 80);
 		}
-		
-    function buildBox(c, r)
-    {
-      var i, j,
-        $box = $("<div/>", { "class": "box" }),
-        $rdiv = $("<div/>", { "class": "rdiv" });
-      for (j = 0; j < c; j++) {
-        $rdiv.append($box.clone().attr('id', "c_" + j));
-      }
-      for (i = 0; i < r; i++) {
-        $("#display").append($rdiv.clone().attr('id', "r_" + i));
-      }
-    }
 
     function displayText(text, r, c)
     {
       var a, b, j, pp = page-1, ppp = page + 1, box;
       for (j = 0; j < text.length; j++) {
-		box = $("#display").find("#r_" + r).find("#c_" + c);
+		box = $("#display").find("#r_" + r).find("#c_" + c).children("span");
 		a = $.trim(box.text()).toUpperCase();
 		b = text[j].toUpperCase();
         if($.trim(b)) { box.removeClass("page_"+pp).removeClass("page_"+ppp).addClass("page_"+page); prev.push(r*cols+c); }
         if(a === '') { 
-			$("#display").find("#r_" + r).find("#c_" + c).text(b);
+			$("#display").find("#r_" + r).find("#c_" + c).children("span").text(b);
         } else {
 			loopThrough(a, b, box, r*cols+c);
 		}
@@ -115,13 +119,29 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     }
 
 
+	function autowrap(text) {
+		var words = [], newtext = "", cc = cols;
+		words = text.replace(/\n/g, " ").split(" ");
+		for(var w in words) {
+			if(newtext.length + words[w].length > cc) {
+				newtext = newtext.concat("\n", words[w]);
+				cc += cols;
+			} else {
+				newtext = newtext.concat(" ", words[w]);
+			}
+		}
+		return $.trim(newtext);
+	}
+
     function displayPage(text)
     {
-      flag = true;
-      var i, textArr = [], l = text.length, r = 0, ll, c;
+	  if(!text) { resetAll(); return ; }
+      var i, textArr = [], l = text.length, r = 0, ll, c, words = [], newtext = "";
       $("#offset").text(page + 1);
       $("#pageof").show();
-      textArr = text.split("\n");
+
+	  textArr = autowrap(text).split("\n");
+
       r = textArr.length - 1;
       r = Math.floor((rows - r) / 2);
       
@@ -135,15 +155,16 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
         r++;
       }
       var pp = page - 1, ppp = page + 1;
-      $("div.page_"+pp).text('').removeClass("page_"+pp);
-      $("div.page_"+ppp).text('').removeClass("page_"+ppp);
+      $("span.page_"+pp).text('').removeClass("page_"+pp);
+      $("span.page_"+ppp).text('').removeClass("page_"+ppp);
     }
       
     function initPage() {
         var text = $.trim($("#input").val()),
             arr = text.split(/\n-{1,}\n/);
+        flag = true;
 		page = 0;
-		$("div.box").text('').removeClass().addClass('box');
+		$("span.charbox").text('').removeClass().addClass('charbox');
 		if(text) { $("#limit").text(arr.length); displayPage($.trim(arr[0])); }
     }
 
@@ -160,25 +181,29 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     }
                            
     function rev() {
+		if(flag) {
      var text = $.trim($("#input").val()),
-        arr = text.split(/\n-{1,}\n/);
+         arr = text.split(/\n-{1,}\n/);
       page--;
       page = (page < 0) ? 0 : page;
       displayPage($.trim(arr[page]));
       $("#limit").text(arr.length);
+      } else { initPage(); }
     }
  
     function fwd(loop) {
-      var text = $.trim($("#input").val()),
-        arr = text.split(/\n-{1,}\n/),
-        end;
-      page++;
-      loop = (loop === undefined) ? false : true;
-      end = (loop) ? 0 : arr.length - 1;
-      if(loop && page > arr.length - 1) $("div.box").text('');
-      page = (page > arr.length - 1) ? end : page;
-      displayPage($.trim(arr[page]));
-      $("#limit").text(arr.length);
+		if(flag) {
+		  var text = $.trim($("#input").val()),
+			arr = text.split(/\n-{1,}\n/),
+			end;
+		  page++;
+		  loop = (loop === undefined) ? false : true;
+		  end = (loop) ? 0 : arr.length - 1;
+		  if(loop && page > arr.length - 1) $("span.charbox").text('');
+		  page = (page > arr.length - 1) ? end : page;
+		  displayPage($.trim(arr[page]));
+		  $("#limit").text(arr.length);
+		} else { initPage(); }
     }  
 
     function resetAll() {
