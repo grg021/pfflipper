@@ -87,16 +87,22 @@ input[type="button"] {
     margin: 5px;
 }
 
-    #main { width:885px; margin: 0 auto; padding:0;}
-    #input { width:800px }
-    div.box { font-size: 32pt; display: inline-block; border:1px solid #333; height:45px; width:36px; vertical-align:middle; line-height:45px;
-    text-transform: uppercase; 
-    -moz-box-shadow: 1px 1px 5px gray;
-    -webkit-box-shadow: 1px 1px 5px gray;
-    margin: 3px 2px;
-    background-color: #000;
-    color: #FFF;
-    font-weight: bold;	
+    #main { width:auto; margin: 0 auto; padding:0;}
+    div.box { 
+		font-size: 32pt; 
+		display: inline-block; 
+		border: 1px solid #333; 
+		height: 45px; 
+		width: 36px; 
+		vertical-align: middle;
+		line-height: 110%;
+		text-transform: uppercase; 
+		-moz-box-shadow: 1px 1px 5px gray;
+		-webkit-box-shadow: 1px 1px 5px gray;
+		margin: 3px 2px;
+		background-color: #000;
+		color: #FFF;
+		font-weight: bold;	
     }
       #display { background-color: #FFF; border:1px solid #333; display:inline-block}
     .rdiv { margin:0; padding:0; text-align: center; vertical-align: middle}

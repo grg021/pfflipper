@@ -1,7 +1,7 @@
 namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     var clientLib = namespace.lookup('com.pageforest.client'),
         play, k = 0, cols = 21, rows = 5, page = 0, flag = false;
-	var ctr, strloop = [];
+	var ctr, strloop = [], prev = [];
 	var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
 	var chars = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
 	var numbers = "0123456789";
@@ -55,7 +55,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		
 		if(stype !== etype) { loopthis = stype + etype; tmpEnd = tmpEnd + stype.length } 
 			else { loopthis = stype; }
-		
+
 		clearInterval(strloop[c]);
 		strloop[c] = setInterval(function() { 
 			box.text(loopthis.charAt(tmpStart));
@@ -85,7 +85,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		box = $("#display").find("#r_" + r).find("#c_" + c);
 		a = $.trim(box.text()).toUpperCase();
 		b = text[j].toUpperCase();
-        if($.trim(b)) box.removeClass("page_"+pp).removeClass("page_"+ppp).addClass("page_"+page);
+        if($.trim(b)) { box.removeClass("page_"+pp).removeClass("page_"+ppp).addClass("page_"+page); prev.push(r*cols+c); }
         if(a === '') { 
 			$("#display").find("#r_" + r).find("#c_" + c).text(b);
         } else {
@@ -106,6 +106,8 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
       textArr = text.split("\n");
       r = textArr.length - 1;
       r = Math.floor((rows - r) / 2);
+      for(p in prev) clearInterval(strloop[prev[p]]);
+      prev = [];
       for (i = 0; i < textArr.length; i++) {
         ll = textArr[i].length;
         c = Math.floor((cols - ll) / 2);

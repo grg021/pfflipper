@@ -50,13 +50,15 @@
         <div id="pageof" style="display:none">Page <span id='offset'></span> of <span id='limit'></span></div>
       </div>
     </div>
-    <div id="form" style="display:none">
-      <div>
-        <textarea id='input' rows="10" cols="100"></textarea>
-      </div>
-      <div>
-        <input type='button' id='reset' value='Reset' onClick="scratch.resetAll()" />
-        <a href="javascript:void(0)" onClick="scratch.client.save()">Link to this display</a>
+    <div id="form" style="text-align:center; display:none">
+	  <div style="display:inline-block">
+		  <div>
+			<textarea id='input' rows="10" cols="100"></textarea>
+		  </div>
+		  <div>
+			<input type='button' id='reset' value='Reset' onClick="scratch.resetAll()" />
+			<a href="javascript:void(0)" onClick="scratch.client.save()">Link to this display</a>
+		  </div>
       </div>
     </div>
   </div>
