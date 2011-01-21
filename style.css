@@ -92,9 +92,10 @@ input[type="button"] {
 		display: inline-block;  
 		text-transform: uppercase; 
 		margin: 3px 2px;
-		font-weight: bold;	
+		font-weight: bold;
+		-webkit-box-shadow: 0 0 5px #555;
     }
-      #display { background-color: #FFF; border:1px solid #333; display:inline-block}
+      #display { background-color: #333; border:1px solid #333; display:inline-block}
     .rdiv { margin:0; padding:0; text-align: center; vertical-align: middle}
 		@-webkit-keyframes spin {
 		  0% { -webkit-transform-origin: 100% 100%; -webkit-transform: rotateX(0deg) skew(0deg, 0deg); }
@@ -107,7 +108,7 @@ input[type="button"] {
 		.box span { display:inline-block }
 		.scale { -webkit-animation: spin 0.08s infinite linear; }
 		.scale2 { -webkit-animation: spin2 0.08s infinite linear; }
-		.dv { background-color: #FFF; border:1px solid #333; display:block; overflow:hidden; text-align: center; }
+		.dv { background-color: #555; color: #FFF; border:1px solid #333; display:block; overflow:hidden; text-align: center; }
 		.dv > div > span { width:100%; vertical-align:middle }
 		.dv > div { height:200%; }
 		.down > div { position:relative; top:-100%; }
