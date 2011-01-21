@@ -39,12 +39,18 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		$cboxa = $("<div class='dv up'><div class='text'><span></span></div></div><div class='dv down'><div class='text'><span></span></div></div>").height(boxH/2).width(boxW).css("line-height", (boxH-4)+"px");
 		$cboxb = $("<div class='dv up'><div class='text'><span></span></div></div><div class='dv down'><div class='text'><span></span></div></div>").height(boxH/2).width(boxW).css("line-height", (boxH-4)+"px");
 		$("div.box > span").html($cboxa.clone(), $cboxb.clone());
-		$("div.box > span > div span").text('');
+		$("div.box div.text > span").text('');
     }
 		
 	function loopThrough(a, b, box, c) {
 		var tmpStart, tmpEnd, stype, etype, loopthis, a1, a2, b1, b2, delay;
-		
+		a1 = box.find("span:first div.text:first");
+		a2 = box.find("span:first div.text:last");
+		b1 = box.find("span:last div.text:first");
+		b2 = box.find("span:last div.text:last");
+		a1.parent().removeClass("scale");
+		a2.parent().removeClass('scale2');
+		if(a === b) return ;
 		stype = letters;
 		tmpStart = stype.indexOf(a);
 		if (tmpStart < 0) { stype = numbers; tmpStart = numbers.indexOf(a); }
@@ -58,19 +64,16 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		if (stype !== etype) { loopthis = stype + etype; tmpEnd = tmpEnd + stype.length; } else { loopthis = stype; }
 
 		clearInterval(strloop[c]);
-		a1 = box.find("span:first div.text:first");
-		a2 = box.find("span:first div.text:last");
-		b1 = box.find("span:last div.text:first");
-		b2 = box.find("span:last div.text:last");
+
+		a1.parent().addClass("scale");
+		setTimeout(function() { a2.parent().addClass('scale2'); }, duration);
 		strloop[c] = setInterval(function() { 
-			a1.parent().addClass("scale");
-			setTimeout(function() { a2.parent().addClass('scale2'); }, duration);
 			box.find("div.text > span").text(loopthis.charAt(tmpStart));
 			tmpStart++;
 			if (tmpStart === tmpEnd + 1) {
 				clearInterval(strloop[c]);
 				a1.parent().removeClass("scale");
-				setTimeout(function() { a2.parent().removeClass('scale2'); }, duration+10);
+				a2.parent().removeClass('scale2');
 			}
 			if (tmpStart > loopthis.length - 1) { tmpStart = 0; }
 			}, duration);
@@ -118,7 +121,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 	  textArr = text.split("\n");
       r = textArr.length - 1;
       r = Math.floor((rows - r) / 2);
-
+	  
       for (var p in prev) { clearInterval(strloop[prev[p]]); }
       prev = [];
       
@@ -146,7 +149,9 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
             arr = text.split(/\n-{1,}\n/);
         flag = true;
 		page = 0;
-		$("div.box .text > span").text('');
+		$("div.box div.text > span").text('');
+		$("div.box").find(".scale").removeClass("scale");
+	    $("div.box").find(".scale2").removeClass("scale2");
 		if (text) { $("#limit").text(arr.length); displayPage($.trim(arr[0])); }
     }
 
