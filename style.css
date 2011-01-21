@@ -89,20 +89,30 @@ input[type="button"] {
 
     #main { width:auto; margin: 0 auto; padding:0;}
     div.box { 
-		font-size: 32pt; 
-		display: inline-block; 
-		border: 1px solid #333; 
-		height: 45px; 
-		width: 36px; 
-		vertical-align: middle;
-		line-height: 100%;
+		display: inline-block;  
 		text-transform: uppercase; 
-		-moz-box-shadow: 1px 1px 5px gray;
-		-webkit-box-shadow: 1px 1px 5px gray;
 		margin: 3px 2px;
-		background-color: #000;
-		color: #FFF;
 		font-weight: bold;	
     }
       #display { background-color: #FFF; border:1px solid #333; display:inline-block}
     .rdiv { margin:0; padding:0; text-align: center; vertical-align: middle}
+		@-webkit-keyframes spin {
+		  0% { -webkit-transform-origin: 100% 100%; -webkit-transform: rotateX(0deg) skew(0deg, 0deg); }
+		  100%   { -webkit-transform-origin: 100% 100%; -webkit-transform: rotateX(90deg) skew(10deg, 0deg); }
+		}
+		@-webkit-keyframes spin2 {
+		  0% { -webkit-transform-origin: 0% 0%; -webkit-transform: rotateX(90deg) skew(-5deg, 0deg); }
+		  100%   { -webkit-transform-origin: 0% 0%; -webkit-transform: rotateX(0deg) skew(0deg, 0deg); }
+		}
+		.box span { display:inline-block }
+		.scale { -webkit-animation: spin 0.08s infinite linear; }
+		.scale2 { -webkit-animation: spin2 0.08s infinite linear; }
+		.dv { background-color: #FFF; border:1px solid #333; display:block; overflow:hidden; text-align: center; }
+		.dv > div > span { width:100%; vertical-align:middle }
+		.dv > div { height:200%; }
+		.down > div { position:relative; top:-100%; }
+		.spn { position:absolute; }
+		.spn.top { z-index:20 }
+		.spn.top > .dv { z-index:15 }
+		.spn.down { z-index:10 }
+		.spn.down > .dv { z-index:5 }

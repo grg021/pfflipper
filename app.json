@@ -5,7 +5,7 @@
     "__class__": "Date",
     "isoformat": "2011-01-17T04:01:39.828940Z"
   },
-  "icon": null,
+  "icon": "null",
   "modified": {
     "__class__": "Date",
     "isoformat": "2011-01-17T04:01:39.829065Z"
@@ -21,10 +21,9 @@
     "demo",
     "sample"
   ],
-  "title": "Pageforest Sample Application",
+  "title": "Aflip",
   "url": "http://aflip.pageforest.com/",
   "writers": [
-    "mckoss",
-    "jcrocholl"
+    "grg021"
   ]
 }

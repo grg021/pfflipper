@@ -5,11 +5,13 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 	var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
 	var chars = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
 	var numbers = "0123456789";
+	var duration = 80;
+	var boxW = 32, boxH = 42;
 	
 	(function($) {
 		$.fn.textfill = function(options) {
 			var fontSize = options.maxFontPixels;
-			var ourText = $('span:visible:first', this);
+			var ourText = $('span', this);
 			var maxHeight = $(this).height();
 			var maxWidth = $(this).width();
 			var textHeight;
@@ -31,13 +33,17 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
         ns.client.addAppBar();
 		buildBox(cols, rows);
 		// resize font based on bounding box size
+		
 		$("div.box > span").text('W');
 		$("div.box").textfill({ maxFontPixels: 72 });
-		$("span.charbox").text('');
+		$cboxa = $("<div class='dv up'><div class='text'><span></span></div></div><div class='dv down'><div class='text'><span></span></div></div>").height(boxH/2).width(boxW).css("line-height", (boxH-4)+"px");
+		$cboxb = $("<div class='dv up'><div class='text'><span></span></div></div><div class='dv down'><div class='text'><span></span></div></div>").height(boxH/2).width(boxW).css("line-height", (boxH-4)+"px");
+		$("div.box > span").html($cboxa.clone(), $cboxb.clone());
+		$("div.box > span > div span").text('');
     }
 		
 	function loopThrough(a, b, box, c) {
-		var tmpStart, tmpEnd, stype, etype, loopthis;
+		var tmpStart, tmpEnd, stype, etype, loopthis, a1, a2, b1, b2, delay;
 		
 		stype = letters;
 		tmpStart = stype.indexOf(a);
@@ -52,25 +58,35 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		if (stype !== etype) { loopthis = stype + etype; tmpEnd = tmpEnd + stype.length; } else { loopthis = stype; }
 
 		clearInterval(strloop[c]);
+		a1 = box.find("span:first div.text:first");
+		a2 = box.find("span:first div.text:last");
+		b1 = box.find("span:last div.text:first");
+		b2 = box.find("span:last div.text:last");
 		strloop[c] = setInterval(function() { 
-			box.text(loopthis.charAt(tmpStart));
+			a1.parent().addClass("scale");
+			setTimeout(function() { a2.parent().addClass('scale2'); }, duration);
+			box.find("div.text > span").text(loopthis.charAt(tmpStart));
 			tmpStart++;
-			if (tmpStart === tmpEnd + 1) { clearInterval(strloop[c]); }
+			if (tmpStart === tmpEnd + 1) {
+				clearInterval(strloop[c]);
+				a1.parent().removeClass("scale");
+				setTimeout(function() { a2.parent().removeClass('scale2'); }, duration+10);
+			}
 			if (tmpStart > loopthis.length - 1) { tmpStart = 0; }
-			}, 80);
+			}, duration);
 	}
 
     function displayText(text, r, c)
     {
       var a, b, j, box;
       for (j = 0; j < text.length; j++) {
-		box = $("#display").find("#r_" + r).find("#c_" + c).children("span");
-		a = $.trim(box.text()).toUpperCase();
+		box = $("#display").find("#r_" + r).find("#c_" + c);
+		a = $.trim(box.find('div.text:first > span').text()).toUpperCase();
 		b = text[j].toUpperCase();
-        if ($.trim(b)) { box.removeClass().addClass("page_" + page); prev.push(r * cols + c); }
+        if ($.trim(b)) { box.find('div.text > span').removeClass().addClass("page_" + page); prev.push(r * cols + c); }
         if (a === '') { 
-			$("#display").find("#r_" + r).find("#c_" + c).children("span").text(b);
-        } else {
+			loopThrough(' ', b, box, r * cols + c);
+		} else {
 			loopThrough(a, b, box, r * cols + c);
 		}
         c++;
@@ -94,15 +110,15 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     function displayPage(text)
     {
 	  if (!text) { resetAll(); return ; }
-      var i, textArr = [], l = text.length, r = 0, ll, c, words = [], newtext = "";
+      var i, textArr = [], l = text.length, r = 0, ll, c, words = [];
       $("#offset").text(page + 1);
       $("#pageof").show();
 
-	  textArr = autowrap(text).split("\n");
-
+	  //textArr = autowrap(text).split("\n");
+	  textArr = text.split("\n");
       r = textArr.length - 1;
       r = Math.floor((rows - r) / 2);
-      
+
       for (var p in prev) { clearInterval(strloop[prev[p]]); }
       prev = [];
       
@@ -112,10 +128,17 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
         displayText($.trim(textArr[i]), r, c);
         r++;
       }
-      //var pp = page - 1, ppp = page + 1;
-      //$("span.page_"+pp).text('').removeClass("page_"+pp);
-      //$("span.page_"+ppp).text('').removeClass("page_"+ppp);
-      $("div.box > span:not(.page_"+page+")").text('').removeClass("not:(.page_"+page+")");
+
+      $("div.box div.text > span:not(.page_"+page+")").each(function(a, b) {
+		var box, r, c;
+		box = $(this).closest('.box');
+		if($.trim(box.find('div.text:first > span').text()) !== '') {
+			c = box.attr('id').split('_')[1];
+			r = box.parent().attr('id').split('_')[1];
+			prev.push(r * cols + c);
+			loopThrough(box.find('div.text:first > span').text(), ' ', box, r * cols + c);
+		}
+	  });
     }
       
     function initPage() {
@@ -123,7 +146,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
             arr = text.split(/\n-{1,}\n/);
         flag = true;
 		page = 0;
-		$("div.box > span").text('').removeClass().addClass('charbox');
+		$("div.box .text > span").text('');
 		if (text) { $("#limit").text(arr.length); displayPage($.trim(arr[0])); }
     }
 
@@ -157,7 +180,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		  page++;
 		  loop = (loop === undefined) ? false : true;
 		  end = (loop) ? 0 : arr.length - 1;
-		  if (loop && page > arr.length - 1) $("span.charbox").text('');
+		  if (loop && page > arr.length - 1) $("div.text > span").text('');
 		  page = (page > arr.length - 1) ? end : page;
 		  displayPage($.trim(arr[page]));
 		  $("#limit").text(arr.length);
@@ -201,8 +224,10 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     function buildBox(c, r)
     {
       var i, j,
+		$cboxa = $("<span id='1' class='spn top'></span>");
+		$cboxb = $("<span id='2' class='spn down'></span>");
 		$charbox = $("<span/>", { "class": "charbox" }),
-        $box = $("<div/>", { "class": "box" }).append($charbox.clone()),
+        $box = $("<div/>", { "class": "box" }).height(boxH).width(boxW).append($cboxa.clone(), $cboxb.clone()),
         $rdiv = $("<div/>", { "class": "rdiv" });
       for (j = 0; j < c; j++) {
         $rdiv.append($box.clone().attr('id', "c_" + j));
