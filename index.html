@@ -1,68 +1,66 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
-
+<meta name="generator" content=
+"HTML Tidy for Linux/x86 (vers 25 March 2009), see www.w3.org">
 <title>Flipper</title>
-
-<link rel="icon" type="image/png" href="/images/icon.png" />
-<link rel="apple-touch-icon" href="/images/touch.png" />
-
+<link rel="icon" type="image/png" href="/images/icon.png">
+<link rel="apple-touch-icon" href="/images/touch.png">
 <!-- A simple application-specific style sheet -->
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href=
+"/lib/beta/css/client.css">
+<script type="text/javascript" src=
+"http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js">
+</script>
+<script type="text/javascript" src="/lib/beta/js/json2.min.js">
+</script>
+<script type="text/javascript" src="/lib/beta/js/utils.js">
+</script>
 
-<link rel="stylesheet" type="text/css" href="style.css" />
-<link rel="stylesheet" type="text/css" href="/lib/beta/css/client.css" />
-
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-<script type="text/javascript" src="/lib/beta/js/json2.min.js"></script>
-<script type="text/javascript" src="/lib/beta/js/utils.js"></script>
-
-<!-- The scratch application code is in main.js -->
-
-<script type="text/javascript" src="main.js"></script>
-<script type="text/javascript" src="flipper.js"></script>
-
+<script type="text/javascript" src="main.js">
+</script>
+<script type="text/javascript" src="flipper.js">
+</script>
 <script type="text/javascript">
   // Call the onReady function of the application when the page is loaded.
   var scratch = namespace.lookup("com.pageforest.scratch");
   $(document).ready(scratch.onReady);
 </script>
-
 </head>
-
 <body>
-
 <div class="page">
-  <div id='main'>
-    <div>
-      <h3>Flap Display Simulator</h3>
-    </div>
-
-    <div>
-      <div style='text-align:center'>
-      <div id='display'>
-      </div>
-      </div>
-      <div style='text-align:center'>
-        <a id="rev" href="javascript:void(0)" onClick="scratch.rev()">Back</a>
-        <a id="play" href="javascript:void(0)" onClick="scratch.play()">Play</a>
-        <a id="stop" href="javascript:void(0)" style="display:none" onClick="scratch.stop()">Stop</a>
-        <a id="fwd" href="javascript:void(0)" onClick="scratch.fwd()">Forward</a>
-        <div id="pageof" style="display:none">Page <span id='offset'></span> of <span id='limit'></span></div>
-      </div>
-    </div>
-    <div id="form" style="text-align:center; display:none">
-	  <div style="display:inline-block">
-		  <div>
-			<textarea id='input' rows="10" cols="100"></textarea>
-		  </div>
-		  <div>
-			<input type='button' id='reset' value='Reset' onClick="scratch.resetAll()" />
-			<a href="javascript:void(0)" onClick="scratch.client.save()">Link to this display</a>
-		  </div>
-      </div>
-    </div>
-  </div>
-</div> <!-- page -->
-
+<div id='main'>
+<div>
+<h3>Flap Display Simulator</h3>
+</div>
+<div>
+<div style='text-align:center'>
+<div id='display'></div>
+</div>
+<div style='text-align:center'><a id="rev" href=
+"javascript:void(0)" onclick="scratch.rev()" name="rev">Back</a>
+<a id="play" href="javascript:void(0)" onclick="scratch.play()"
+name="play">Play</a> <a id="stop" href="javascript:void(0)" style=
+"display:none" onclick="scratch.stop()" name="stop">Stop</a> <a id=
+"fwd" href="javascript:void(0)" onclick="scratch.fwd()" name=
+"fwd">Forward</a>
+<div id="pageof" style="display:none">Page <span id=
+'offset'></span> of <span id='limit'></span></div>
+</div>
+</div>
+<div id="form" style="text-align:center; display:none">
+<div style="display:inline-block">
+<div>
+<textarea id='input' rows="10" cols="100">
+</textarea></div>
+<div><input type='button' id='reset' value='Reset' onclick=
+"scratch.resetAll()"> <a href="javascript:void(0)" onclick=
+"scratch.client.save()">Link to this display</a></div>
+</div>
+</div>
+</div>
+</div>
+<!-- page -->
 </body>
 </html>
