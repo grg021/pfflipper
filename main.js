@@ -60,14 +60,17 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		var $cboxa = $("<div class='dv up'><div class='text'><span></span></div></div><div class='dv down'><div class='text'><span></span></div></div>").height(boxH / 2).width(boxW).css("line-height", (boxH - 4) + "px"),
 			$cboxb = $("<div class='dv up'><div class='text'><span></span></div></div><div class='dv down'><div class='text'><span></span></div></div>").height(boxH / 2).width(boxW).css("line-height", (boxH - 4) + "px");
 		$("div.box > span").html($cboxa.clone(), $cboxb.clone());
+		
+		// resize textarea
+		$("#input").width($("#display").width());
     }
 		
 	function loopThrough(a, b, box, c) {
 		var tmpStart, tmpEnd, stype, etype, loopthis, a1, a2, b1, b2;
-		a1 = box.find("span:first div.text:first");
-		a2 = box.find("span:first div.text:last");
-		b1 = box.find("span:last div.text:first");
-		b2 = box.find("span:last div.text:last");
+		a1 = box.find("span.top div.up div.text");
+		a2 = box.find("span.top div.down div.text");
+		b1 = box.find("span.down div.up div.text");
+		b2 = box.find("span.down div.down div.text");
 		a1.parent().removeClass("scale");
 		a2.parent().removeClass('scale2');
 		if (a === b) { return; }
@@ -87,8 +90,12 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 
 		a1.parent().addClass("scale");
 		setTimeout(function () { a2.parent().addClass('scale2'); }, duration);
-		strloop[c] = setInterval(function () { 
-			box.find("div.text > span").text(loopthis.charAt(tmpStart));
+		strloop[c] = setInterval(function () {
+			//box.find("div.text > span").text(loopthis.charAt(tmpStart));
+			a1.children("span").text(loopthis.charAt(tmpStart));
+			a2.children("span").text(loopthis.charAt(tmpStart));
+			setTimeout( function(){ b1.children("span").text(loopthis.charAt(tmpStart)); }, duration/2);
+			setTimeout( function(){ b2.children("span").text(loopthis.charAt(tmpStart-1)); }, duration/2);
 			tmpStart++;
 			if (tmpStart === tmpEnd + 1) {
 				clearInterval(strloop[c]);
@@ -166,9 +173,10 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     function initPage() {
         var text = $.trim($("#input").val()),
             arr = text.split(/\n-{1,}\n/);
+        if (!text) { ns.resetAll(); return; }
         flag = true;
 		page = 0;
-		$("div.box div.text > span").text('');
+		//$("div.box div.text > span").text('');
 		$("div.box").find(".scale").removeClass("scale");
 	    $("div.box").find(".scale2").removeClass("scale2");
 		if (text) { $("#limit").text(arr.length); displayPage($.trim(arr[0])); }
@@ -178,6 +186,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		var text = $.trim($("#input").val()),
 			arr = text.split(/\n-{1,}\n/),
 			end;
+		if (!text) { ns.resetAll(); return; }
 		if (arr.length === 1) { initPage(); return; }
 		page++;
 		loop = (loop === undefined) ? false : true;
@@ -203,7 +212,8 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     function resetAll() {
 		$("#pageof").hide();
 		$("#input").text('');
-		stop();
+		//stop();
+		$("div.box div.text > span").text('');
 		flag = false;
 		ns.client.setDirty(false);
     }
@@ -211,6 +221,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     function rev() {
 		var text = $.trim($("#input").val()),
 			arr = text.split(/\n-{1,}\n/);
+		if (!text) { ns.resetAll(); return; }
 		if (arr.length === 1) { initPage(); return; }
 		page--;
 		page = (page < 0) ? 0 : page;
