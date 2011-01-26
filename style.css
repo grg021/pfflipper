@@ -94,9 +94,9 @@ div.box {
 	text-transform: uppercase; 
 	margin: 3px 2px;
 	font-weight: bold;
-	-moz-box-shadow: 0 0 5px #555;
-	-webkit-box-shadow: 0 0 5px #555;
-	box-shadow: 0 0 5px #555;
+	-moz-box-shadow: 2px 4px 3px #888;
+	-webkit-box-shadow: 2px 4px 3px #888;
+	box-shadow: 2px 4px 3px #888;
 }
 
 #display { 

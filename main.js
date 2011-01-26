@@ -1,4 +1,4 @@
-/*global $, clearInterval, setTimeout, setInterval, namespace, jQuery */
+/*global $, clearInterval, setTimeout, setInterval, namespace, jQuery, window */
 namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     var clientLib = namespace.lookup('com.pageforest.client'),
         playloop, 
@@ -42,7 +42,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 				textHeight = ourText.height();
 				textWidth = ourText.width();
 				fontSize = fontSize - 1;
-			} while (textHeight > maxHeight || textWidth > maxWidth && fontSize > 3);
+			} while (textHeight > maxHeight || (textWidth > maxWidth && fontSize > 3));
 			return this;
 		};
 	});
@@ -95,8 +95,8 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 			//box.find("div.text > span").text(loopthis.charAt(tmpStart));
 			a1.children("span").text(loopthis.charAt(tmpStart));
 			a2.children("span").text(loopthis.charAt(tmpStart));
-			setTimeout( function(){ b1.children("span").text(loopthis.charAt(tmpStart)); }, duration/2);
-			setTimeout( function(){ b2.children("span").text(loopthis.charAt(tmpStart-1)); }, duration/2);
+			setTimeout(function () { b1.children("span").text(loopthis.charAt(tmpStart)); }, duration / 2);
+			setTimeout(function () { b2.children("span").text(loopthis.charAt(tmpStart - 1)); }, duration / 2);
 			tmpStart++;
 			if (tmpStart === tmpEnd + 1) {
 				clearInterval(strloop[c]);
@@ -231,11 +231,15 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     }
     
     function setDoc(json) {
-        $('#input').val(json.blob.text);
+		if (json) {
+			$('#input').val(json.blob.text);
+			ns.play();
+		}
     }
 
     function getDoc() {
         return {
+			"readers" : ["public"],
 			"blob": {
 				version: 1,
 				text: $('#input').val()
@@ -243,19 +247,55 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
         };
     }
 
-    function onStateChange(newState, oldState) {
-		if (newState === 'clean') {
-			var url = ns.client.getDocURL(),
-				link = $('#form');
-			if (url) {
-				link.hide();
-				ns.play();
-			} else {
-				link.show();
+    // function onStateChange(newState, oldState) {
+		// if (newState === 'clean') {
+			// var url = ns.client.getDocURL(),
+				// link = $('#form');
+			// if (url) {
+				// link.hide();
+				// ns.play();
+			// } else {
+				// link.show();
+			// }
+		// }
+    // }
+	
+	function saveDoc(docid) {
+		var data = {
+			title: "Flipper",
+			readers: ["public"],
+			blob: {version: "1", text: $('#input').val()}
+		};
+		$.ajax({
+			type: "PUT",
+			url: "/docs/" + docid,
+			data: JSON.stringify(data),
+			success: function (data) {
+				ns.client.setDirty(false);
+				window.location.replace("display.html#" + docid);
 			}
+		});
+	}
+
+	function linkToDisplay() {
+		if (ns.client.docid) {
+			saveDoc(ns.client.docid);
+		} else {
+			$.ajax({
+				type: 'GET',
+				url: "/docs/?method=list&keysonly=true",
+				success: function (message, status, xhr) {
+					var prop, propCount = 0;
+					for (prop in message.items) {
+						if (prop) { propCount++; }
+					}
+					saveDoc(ns.client.username + "_" + propCount);
+				}
+			});
 		}
-    }
-      
+		return false;
+	}
+	
     ns.extend({
         'onReady': onReady,
         'getDoc': getDoc,
@@ -265,7 +305,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		'rev' : rev,
 		'fwd' : fwd,
 		'resetAll' : resetAll,
-        'onStateChange': onStateChange
+		'linkToDisplay' : linkToDisplay
     });
 
 });
