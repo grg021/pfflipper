@@ -50,7 +50,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     function onReady() {
         $('#input').focus();
         ns.client = new clientLib.Client(ns);
-        ns.client.saveInterval = 0;  // Turn off auto-save.
+        //ns.client.saveInterval = 0;  // Turn off auto-save.
         ns.client.addAppBar();
 		buildBox(cols, rows);
 		
@@ -61,8 +61,9 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 			$cboxb = $("<div class='dv up'><div class='text'><span></span></div></div><div class='dv down'><div class='text'><span></span></div></div>").height(boxH / 2).width(boxW).css("line-height", (boxH - 4) + "px");
 		$("div.box > span").html($cboxa.clone(), $cboxb.clone());
 		
-		// resize textarea
+		// resize textarea and title width
 		$("#input").width($("#display").width());
+		$("#title").width($("#display").width());
     }
 		
 	function loopThrough(a, b, box, c) {
