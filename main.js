@@ -11,7 +11,8 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ",
 		chars = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
 		numbers = "0123456789",
-		duration = 80,
+		duration = 80, // letter to letter transition duration
+		psdelay = 5000, // page switch delay
 		boxW = 32, 
 		boxH = 42;
 		
@@ -50,7 +51,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     function onReady() {
         $('#input').focus();
         ns.client = new clientLib.Client(ns);
-        //ns.client.saveInterval = 0;  // Turn off auto-save.
+        ns.client.saveInterval = 0;  // Turn off auto-save.
         ns.client.addAppBar();
 		buildBox(cols, rows);
 		
@@ -191,8 +192,13 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		if (arr.length === 1) { initPage(); return; }
 		page++;
 		loop = (loop === undefined) ? false : true;
-		end = (loop) ? 0 : arr.length - 1;
-		if (loop && page > arr.length - 1) { $("div.text > span").text(''); }
+		// end = (loop) ? 0 : arr.length - 1;
+		end = arr.length - 1;
+		if (loop && page >= arr.length - 1) { 
+			// $("div.text > span").text('');
+			$("#stop").hide(1, function () { $("#play").show(); });
+			clearInterval(playloop);
+		}
 		page = (page > arr.length - 1) ? end : page;
 		displayPage($.trim(arr[page]));
 		$("#limit").text(arr.length);
@@ -201,7 +207,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
     function play() {
 		$("#play").hide(1, function () { $("#stop").show(); });
 		initPage();
-		playloop = setInterval(function () { fwd(true); }, 5000);
+		playloop = setInterval(function () { fwd(true); }, psdelay);
     }
                            
     function stop() {
