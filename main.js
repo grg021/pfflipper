@@ -284,6 +284,12 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 	}
 
 	function linkToDisplay() {
+        var isSignedIn = ns.client.username != undefined;
+        if (!isSignedIn) {
+            //ns.client.signIn();
+			ns.client.save();
+			return;
+        }
 		if (ns.client.docid) {
 			saveDoc(ns.client.docid);
 		} else {
