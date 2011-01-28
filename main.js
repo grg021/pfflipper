@@ -49,7 +49,16 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         };
     });
 
+    jQuery(function () {
+        jQuery.support.animation = false;
+        jQuery.each(['-webkit-animation', '-moz-animation', '-o-animation', 'animation'], function () {
+            if (document.body.style[this] !== undefined) { jQuery.support.animation = true; }
+            return (!jQuery.support.animation);
+        });
+    });
+
     function onReady() {
+        if (!$.support.animation) { $("#warning").show(); }
         boxW = Math.floor((wwidth - 20) / cols - 4);
         boxH = boxW * 1.25;
         $('#input').focus();
@@ -58,16 +67,17 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         if (document.getElementById('title')) { ns.client.addAppBar(); }
         buildBox(cols, rows);
 
-                
+
         var $cboxa = $("<div class='dv up'><div class='text'><span></span></div></div><div class='dv down'><div class='text'><span></span></div></div>").height(boxH / 2).width(boxW).css("line-height", (boxH - 4) + "px"),
             $cboxb = $("<div class='dv up'><div class='text'><span></span></div></div><div class='dv down'><div class='text'><span></span></div></div>").height(boxH / 2).width(boxW).css("line-height", (boxH - 4) + "px");
-        
+
         // resize font based on bounding box size
         $("div.box > span").text('W');
         $("div.box").textfill({ maxFontPixels: 72 });
         $("div.box > span").html($cboxa.clone(), $cboxb.clone());
 
         // resize textarea and title width
+        $('#display').width($("#display").width());
         $("#input").width($("#display").width());
         $("#title").width($("#display").width());
         $("#nav > div").width($("#display").width());
