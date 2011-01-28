@@ -5,7 +5,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         cols = 21, 
         rows = 5, 
         page = 0, 
-        flag = false,
 		strloop = [], 
 		prev = [],
 		letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -131,19 +130,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 		}
     }
 
-	/*function autowrap(text) {
-		var words = [], newtext = "", cc = cols, w;
-		words = text.replace(/\n/g, " ").split(" ");
-		for (w in words) {
-			if (newtext.length + words[w].length > cc) {
-				newtext = newtext.concat("\n", words[w]);
-				cc += cols;
-			} else {
-				newtext = newtext.concat(" ", words[w]);
-			}
-		}
-		return $.trim(newtext);
-	}*/
 	function clipText(text) {
 		var strl = text.length;
 		if (strl % 2) {
@@ -156,10 +142,9 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     function displayPage(text) {
 		if (!text) { ns.resetAll(); return; }
 		var i, textArr = [], r = 0, ll, c, box, s, d, p, ctext;
-		$("#offset").text(page + 1);
+		$("#offset").text(page);
 		$("#pageof").show();
 
-		//textArr = autowrap(text).split("\n");
 		textArr = text.split("\n");
 		r = textArr.length - 1;
 		r = Math.floor((rows - r) / 2);
@@ -189,67 +174,48 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 		});
     }
 
-    function initPage() {
-        var text = $.trim($("#input").val()),
-            arr = text.split(/\n-{1,}\n/);
-        if (!text) { ns.resetAll(); return; }
-        flag = true;
-		page = 0;
-		//$("div.box div.text > span").text('');
-		$("div.box").find(".scale").removeClass("scale");
-	    $("div.box").find(".scale2").removeClass("scale2");
-		if (text) { $("#limit").text(arr.length); displayPage($.trim(arr[0])); }
-    }
-
-    function fwd(loop) {
+    function fwd() {
 		var text = $.trim($("#input").val()),
 			arr = text.split(/\n-{1,}\n/),
 			end;
 		if (!text) { ns.resetAll(); return; }
-		if (arr.length === 1) { initPage(); return; }
 		page++;
-		loop = (loop === undefined) ? false : true;
-		// end = (loop) ? 0 : arr.length - 1;
-		end = arr.length - 1;
-		if (loop && page >= arr.length - 1) { 
-			// $("div.text > span").text('');
-			$("#stop").hide(1, function () { $("#play").show(); });
-			clearInterval(playloop);
-		}
-		page = (page > arr.length - 1) ? end : page;
-		displayPage($.trim(arr[page]));
+		page = (page > arr.length) ? 1 : page;
+		displayPage($.trim(arr[page - 1]));
 		$("#limit").text(arr.length);
     }  
 
     function play() {
 		$("#play").hide(1, function () { $("#stop").show(); });
-		initPage();
-		playloop = setInterval(function () { fwd(true); }, psdelay);
+		page = 0;
+		fwd();
+		playloop = setInterval(function () { fwd(); }, psdelay);
     }
                            
     function stop() {
 		$("#stop").hide(1, function () { $("#play").show(); });
 		clearInterval(playloop);
-		initPage();
+		page = 0;
+		fwd();
     }
     
     function resetAll() {
 		$("#pageof").hide();
 		$("#input").text('');
-		//stop();
 		$("div.box div.text > span").text('');
-		flag = false;
 		ns.client.setDirty(false);
+		clearInterval(playloop);
+		page = 0;
+		$("#stop").hide(1, function () { $("#play").show(); });
     }
                            
     function rev() {
 		var text = $.trim($("#input").val()),
 			arr = text.split(/\n-{1,}\n/);
 		if (!text) { ns.resetAll(); return; }
-		if (arr.length === 1) { initPage(); return; }
-		page--;
-		page = (page < 0) ? 0 : page;
-		displayPage($.trim(arr[page]));
+		page = (page) ? page - 1 : 1;
+		page = (page < 1) ? arr.length : page;
+		displayPage($.trim(arr[page - 1]));
 		$("#limit").text(arr.length);
     }
     
@@ -269,19 +235,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 			}
         };
     }
-
-    // function onStateChange(newState, oldState) {
-		// if (newState === 'clean') {
-			// var url = ns.client.getDocURL(),
-				// link = $('#form');
-			// if (url) {
-				// link.hide();
-				// ns.play();
-			// } else {
-				// link.show();
-			// }
-		// }
-    // }
 	
 	function saveDoc(docid) {
 		var data = {
@@ -303,7 +256,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 	function linkToDisplay() {
         var isSignedIn = ns.client.username != undefined;
         if (!isSignedIn) {
-            //ns.client.signIn();
 			ns.client.save();
 			return;
         }
