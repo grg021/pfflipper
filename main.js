@@ -20,7 +20,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     function buildBox(c, r) {
         var i, j,
             $cboxa = $("<span id='1' class='spn top'></span>"),
-            $cboxb = $("<span id='2' class='spn down'></span>"),
+            $cboxb = $("<span id='2' class='spn bottom'></span>"),
             $box = $("<div/>", { "class": "box" }).height(boxH).width(boxW).append($cboxa.clone(), $cboxb.clone()),
             $rdiv = $("<div/>", { "class": "rdiv" });
         for (j = 0; j < c; j++) {
@@ -87,8 +87,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         var tmpStart, tmpEnd, stype, etype, loopthis, a1, a2, b1, b2;
         a1 = box.find("span.top div.up div.text");
         a2 = box.find("span.top div.down div.text");
-        b1 = box.find("span.down div.up div.text");
-        b2 = box.find("span.down div.down div.text");
+        b1 = box.find("span.bottom div.up div.text");
+        b2 = box.find("span.bottom div.down div.text");
         a1.parent().removeClass("scale");
         a2.parent().removeClass('scale2');
         if (a === b) { return; }

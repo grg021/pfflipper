@@ -146,8 +146,8 @@ div.box {
 .spn { position:absolute; }
 .spn.top { z-index:20 }
 .spn.top > .dv { z-index:15 }
-.spn.down { z-index:10 }
-.spn.down > .dv { z-index:5 }
+.spn.bottom { z-index:10 }
+.spn.bottom > .dv { z-index:5 }
 #nav {
 	margin: 2px 0;
 }
