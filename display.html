@@ -22,37 +22,40 @@
 </script>
 <script type="text/javascript">
   // Call the onReady function of the application when the page is loaded.
-  var scratch = namespace.lookup("com.pageforest.scratch");
-  $(document).ready(scratch.onReady);
+  var flipper = namespace.lookup("com.pageforest.flipper");
+  $(document).ready(flipper.onReady);
 </script>
 </head>
 <body>
 <div class="page">
 <div id='main'>
 <div style="text-align:center">
-<div id="title">
-<br />
-<span>Flap Display Simulator</span>
+<div id="warning" style="display:none">
+<span>Sorry, no split-flap animation for you! Your browser doesn't support
+CSS3 animation.</span>
+<a href="javascript:void(0)" onClick="$(this).parent().hide()">Close this
+</a>
 </div>
 </div>
 <div>
 <div style='text-align:center'>
 <div id='display'></div>
 </div>
-<div style='text-align:center' id="nav"><a id="rev" href=
-"javascript:void(0)" onclick="scratch.rev()" name="rev">Back</a>
-<a id="play" href="javascript:void(0)" onclick="scratch.play()"
+<div style='text-align:center' id="nav"><div style="display:inline-block">
+<a id="rev" href=
+"javascript:void(0)" onclick="flipper.rev()" name="rev">Back</a>
+<a id="play" href="javascript:void(0)" onclick="flipper.play()"
 name="play">Play</a> <a id="stop" href="javascript:void(0)" style=
-"display:none" onclick="scratch.stop()" name="stop">Stop</a> <a id=
-"fwd" href="javascript:void(0)" onclick="scratch.fwd()" name=
+"display:none" onclick="flipper.stop()" name="stop">Stop</a> <a id=
+"fwd" href="javascript:void(0)" onclick="flipper.fwd()" name=
 "fwd">Forward</a>
-<div id="pageof" style="display:none">Page <span id=
-'offset'></span> of <span id='limit'></span></div>
+<span id="pageof" style="display:none; float: right">Page <span id=
+'offset'></span> of <span id='limit'></span></span></div>
 </div>
 </div>
 </div>
 </div>
 <!-- page -->
-<input type='hidden' value="" id="input" />
+<form action = ''><input type='hidden' value="" id="input" /></form>
 </body>
 </html>

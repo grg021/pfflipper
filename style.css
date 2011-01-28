@@ -3,7 +3,7 @@ body {
     padding: 0;
     font-family: Helvetica, sans-serif;
     font-size: 15px;
-    background: #ebebeb url("images/gradient.jpg") repeat-x left top;
+    background: none;
 }
 
 h1 {
@@ -76,7 +76,7 @@ input[type="text"] {
 }
 
 textarea {
-    font-family: Helvetica, sans-serif;
+    font-family: "Courier New", Courier, monospace;
     width: 800px;
     height: 100px;
     font-size: 15px;
@@ -89,49 +89,56 @@ input[type="button"] {
 
 #main { width:auto; margin: 0 auto; padding:0;}
 #title { display:inline-block; text-align:left; font-size:30px; font-weight:bold; margin: 0 0 5px 0; }
-div.box { 
-	display: inline-block;  
-	text-transform: uppercase; 
-	margin: 3px 2px;
-	font-weight: bold;
-	-moz-box-shadow: 2px 4px 3px #888;
-	-webkit-box-shadow: 2px 4px 3px #888;
-	box-shadow: 2px 4px 3px #888;
+div.box {
+    display: inline-block;
+    text-transform: uppercase;
+    margin: 3px 2px;
+    font-weight: bold;
+    -moz-box-shadow: 2px 4px 3px #888;
+    -webkit-box-shadow: 2px 4px 3px #888;
+    box-shadow: 2px 4px 3px #888;
 }
 
-#display { 
-	background-color: #333; 
-	border:1px solid #333; 
-	display:inline-block
+#display {
+    background-color: #333;
+    display:inline-block;
+    border-color: #333;
+    border-style: solid;
+    border-width: 2px 5px 4px 2px;
 }
 
 .rdiv { margin:0; padding:0; text-align: center; vertical-align: middle; }
 
 @-webkit-keyframes spin {
-	0% {
-		-webkit-transform-origin: 100% 100%; 
-		-webkit-transform: rotateX(0deg) skew(0deg, 0deg); 
-		background-color: #555;
-	}
-	100% { 
-		-webkit-transform-origin: 100% 100%; 
-		-webkit-transform: rotateX(90deg) skew(10deg, 0deg); 
-		background-color: #333;
-	}
+    0% {
+        -webkit-transform-origin: 100% 100%;
+        -webkit-transform: rotateX(0deg) skew(0deg, 0deg);
+        background-color: #555;
+        opacity: 1;
+    }
+    100% {
+        -webkit-transform-origin: 100% 100%;
+        -webkit-transform: rotateX(90deg) skew(10deg, 0deg);
+        background-color: #777;
+        opacity: 0.7;
+
+    }
 }
 
 
 @-webkit-keyframes spin2 {
-	0% { 
-		-webkit-transform-origin: 0% 0%; 
-		-webkit-transform: rotateX(90deg) skew(-5deg, 0deg);
-		background-color: #333; 
-	}
-	100% { 
-		-webkit-transform-origin: 0% 0%; 
-		-webkit-transform: rotateX(0deg) skew(0deg, 0deg); 
-		background-color: #555;
-	}
+    0% {
+        -webkit-transform-origin: 0% 0%;
+        -webkit-transform: rotateX(90deg) skew(-5deg, 0deg);
+        background-color: #777;
+        opacity: 0.7;
+    }
+    100% {
+        -webkit-transform-origin: 0% 0%;
+        -webkit-transform: rotateX(0deg) skew(0deg, 0deg);
+        background-color: #555;
+        opacity: 1;
+    }
 }
 
 .box span { display:inline-block }
@@ -144,22 +151,22 @@ div.box {
 .spn { position:absolute; }
 .spn.top { z-index:20 }
 .spn.top > .dv { z-index:15 }
-.spn.down { z-index:10 }
-.spn.down > .dv { z-index:5 }
+.spn.bottom { z-index:10 }
+.spn.bottom > .dv { z-index:5 }
 #nav {
-	margin: 2px 0;
+    margin: 2px 0;
 }
 #nav a {
-	display: inline-block;
-	background-color: #333;
-	padding: 3px;
-	margin: 2px 0;
-	text-decoration: none;
-	color: white;
-	border:1px solid #555;
+    display: inline-block;
+    background-color: #333;
+    padding: 3px;
+    margin: 2px 0;
+    text-decoration: none;
+    color: white;
+    border:1px solid #555;
 }
 
 #nav a:hover {
-	border:1px solid #AAA;
-	color: #CCC;
+    border:1px solid #AAA;
+    color: #CCC;
 }
