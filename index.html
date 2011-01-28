@@ -22,8 +22,8 @@
 </script>
 <script type="text/javascript">
   // Call the onReady function of the application when the page is loaded.
-  var scratch = namespace.lookup("com.pageforest.scratch");
-  $(document).ready(scratch.onReady);
+  var flipper = namespace.lookup("com.pageforest.flipper");
+  $(document).ready(flipper.onReady);
 </script>
 </head>
 <body>
@@ -39,11 +39,11 @@
 <div id='display'></div>
 </div>
 <div style='text-align:center' id="nav"><a id="rev" href=
-"javascript:void(0)" onclick="scratch.rev()" name="rev">Back</a>
-<a id="play" href="javascript:void(0)" onclick="scratch.play()"
+"javascript:void(0)" onclick="flipper.rev()" name="rev">Back</a>
+<a id="play" href="javascript:void(0)" onclick="flipper.play()"
 name="play">Play</a> <a id="stop" href="javascript:void(0)" style=
-"display:none" onclick="scratch.stop()" name="stop">Stop</a> <a id=
-"fwd" href="javascript:void(0)" onclick="scratch.fwd()" name=
+"display:none" onclick="flipper.stop()" name="stop">Stop</a> <a id=
+"fwd" href="javascript:void(0)" onclick="flipper.fwd()" name=
 "fwd">Forward</a>
 <div id="pageof" style="display:none">Page <span id=
 'offset'></span> of <span id='limit'></span></div>
@@ -56,8 +56,8 @@ name="play">Play</a> <a id="stop" href="javascript:void(0)" style=
 </textarea></div>
 <div style="text-align: right">
 <!--<input type='button' id='reset' value='Reset' onclick=
-"scratch.resetAll()">--> <a href="javascript:void(0)" onclick=
-"scratch.linkToDisplay()">Link to this display</a></div>
+"flipper.resetAll()">--> <a href="javascript:void(0)" onclick=
+"flipper.linkToDisplay()">Link to this display</a></div>
 </div>
 </div>
 </div>

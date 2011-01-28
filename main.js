@@ -1,5 +1,5 @@
 /*global $, clearInterval, setTimeout, setInterval, namespace, jQuery, window */
-namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
+namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     var clientLib = namespace.lookup('com.pageforest.client'),
         playloop, 
         cols = 21, 
