@@ -144,10 +144,18 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 		}
 		return $.trim(newtext);
 	}*/
+	function clipText(text) {
+		var strl = text.length;
+		if (strl % 2) {
+			return text.substr(Math.ceil(strl / 2) - Math.ceil(cols / 2), cols);
+		} else {
+			return text.substr(strl / 2 - Math.floor(cols / 2), cols);
+		}
+	}
 
     function displayPage(text) {
 		if (!text) { ns.resetAll(); return; }
-		var i, textArr = [], r = 0, ll, c, box, s, d, p;
+		var i, textArr = [], r = 0, ll, c, box, s, d, p, ctext;
 		$("#offset").text(page + 1);
 		$("#pageof").show();
 
@@ -162,9 +170,11 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 		}
       
 		for (i = 0; i < textArr.length; i++) {
-			ll = textArr[i].length;
+			ctext = $.trim(textArr[i]);
+			ctext = (ctext.length > cols) ? clipText(ctext) : ctext;
+			ll = ctext.length;
 			c = Math.floor((cols - ll) / 2);
-			displayText($.trim(textArr[i]), r, c);
+			displayText(ctext, r, c);
 			r++;
 		}
 		
