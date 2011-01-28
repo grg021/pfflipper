@@ -13,7 +13,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 		duration = 80, // letter to letter transition duration
 		psdelay = 5000, // page switch delay
 		boxW = 32, 
-		boxH = 42;
+		boxH = 42,
+		curr = 0;
 		
     function buildBox(c, r) {
 		var i, j,
@@ -120,7 +121,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 			box = $("#display").find("#r_" + r).find("#c_" + c);
 			a = $.trim(box.find('div.text:first > span').text()).toUpperCase();
 			b = text[j].toUpperCase();
-			if ($.trim(b)) { box.find('div.text > span').removeClass().addClass("page_" + page); prev.push(r * cols + c); }
+			if ($.trim(b)) { box.find('div.text > span').removeClass().addClass("page_" + curr); prev.push(r * cols + c); }
 			if (a === '') { 
 				loopThrough(' ', b, box, r * cols + c);
 			} else {
@@ -140,6 +141,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 	}
 
     function displayPage(text) {
+		curr = (curr) ? 0 : 1;
 		if (!text) { ns.resetAll(); return; }
 		var i, textArr = [], r = 0, ll, c, box, s, d, p, ctext;
 		$("#offset").text(page);
@@ -163,7 +165,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 			r++;
 		}
 		
-		$("div.box div.text > span:not(.page_" + page + ")").each(function (a, b) {
+		$("div.box div.text > span:not(.page_" + curr + ")").each(function (a, b) {
 			box = $(this).closest('.box');
 			if ($.trim(box.find('div.text:first > span').text()) !== '') {
 				d = box.attr('id').split('_')[1];
