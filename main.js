@@ -100,7 +100,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 		a1.parent().addClass("scale");
 		setTimeout(function () { a2.parent().addClass('scale2'); }, duration);
 		strloop[c] = setInterval(function () {
-			//box.find("div.text > span").text(loopthis.charAt(tmpStart));
 			a1.children("span").text(loopthis.charAt(tmpStart));
 			a2.children("span").text(loopthis.charAt(tmpStart));
 			setTimeout(function () { b1.children("span").text(loopthis.charAt(tmpStart)); }, duration / 2);
@@ -171,6 +170,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 				d = box.attr('id').split('_')[1];
 				s = box.parent().attr('id').split('_')[1];
 				prev.push(s * cols + d);
+				box.find('div.text > span').removeClass();
+				clearInterval(strloop[s * cols + d]);
 				loopThrough(box.find('div.text:first > span').text(), ' ', box, s * cols + d);
 			}
 		});
