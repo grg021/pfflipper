@@ -76,7 +76,7 @@ input[type="text"] {
 }
 
 textarea {
-    font-family: Helvetica, sans-serif;
+    font-family: "Courier New", Courier, monospace;
     width: 800px;
     height: 100px;
     font-size: 15px;

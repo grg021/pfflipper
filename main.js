@@ -8,7 +8,7 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
         flag = false,
 		strloop = [], 
 		prev = [],
-		letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ",
+		letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 		chars = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
 		numbers = "0123456789",
 		duration = 80, // letter to letter transition duration
@@ -76,17 +76,24 @@ namespace.lookup('com.pageforest.scratch').defineOnce(function (ns) {
 		a1.parent().removeClass("scale");
 		a2.parent().removeClass('scale2');
 		if (a === b) { return; }
-		stype = letters;
-		tmpStart = stype.indexOf(a);
-		if (tmpStart < 0) { stype = numbers; tmpStart = numbers.indexOf(a); }
-		if (tmpStart < 0) { stype = chars; tmpStart = chars.indexOf(a); }
+		if (a !== ' ') {
+			stype = letters;
+			tmpStart = stype.indexOf(a);
+			if (tmpStart < 0) { stype = numbers; tmpStart = numbers.indexOf(a); }
+			if (tmpStart < 0) { stype = chars; tmpStart = chars.indexOf(a); }
+		}
+		if (b !== ' ') {
+			etype = letters;
+			tmpEnd = etype.indexOf(b);
+			if (tmpEnd < 0) { etype = numbers; tmpEnd = numbers.indexOf(b); }
+			if (tmpEnd < 0) { etype = chars; tmpEnd = chars.indexOf(b); }
+			if(a === ' ') { stype = etype; tmpStart = 1; }
+		} else {
+			etype = stype += ' ';
+			tmpEnd = etype.indexOf(b);
+		}
 		
-		etype = letters;
-		tmpEnd = etype.indexOf(b);
-		if (tmpEnd < 0) { etype = numbers; tmpEnd = numbers.indexOf(b); }
-		if (tmpEnd < 0) { etype = chars; tmpEnd = chars.indexOf(b); }
-		
-		if (stype !== etype) { loopthis = stype + etype; tmpEnd = tmpEnd + stype.length; } else { loopthis = stype; }
+		if (stype !== etype) { loopthis = stype + " " + etype; tmpEnd = tmpEnd + stype.length + 1; } else { loopthis = etype; }
 
 		clearInterval(strloop[c]);
 
