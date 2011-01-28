@@ -12,8 +12,9 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 		numbers = "0123456789",
 		duration = 80, // letter to letter transition duration
 		psdelay = 5000, // page switch delay
-		boxW = 32, 
-		boxH = 42,
+		boxSize = 1, 
+		boxW = 32,
+		boxH = boxW * 1.25,
 		curr = 0;
 		
     function buildBox(c, r) {
@@ -49,12 +50,15 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 	});
     
     function onReady() {
+		var wwidth = $(window).width();
+		boxW = Math.floor((wwidth - 20) / cols - 4);
+		boxH = boxW * 1.25;
         $('#input').focus();
         ns.client = new clientLib.Client(ns);
         ns.client.saveInterval = 0;  // Turn off auto-save.
-        ns.client.addAppBar();
+        if (document.getElementById('title')) { ns.client.addAppBar(); }
 		buildBox(cols, rows);
-		
+
 		// resize font based on bounding box size
 		$("div.box > span").text('W');
 		$("div.box").textfill({ maxFontPixels: 72 });
@@ -65,6 +69,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 		// resize textarea and title width
 		$("#input").width($("#display").width());
 		$("#title").width($("#display").width());
+		$("#nav > div").width($("#display").width());
     }
 		
 	function loopThrough(a, b, box, c) {

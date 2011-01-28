@@ -3,7 +3,7 @@ body {
     padding: 0;
     font-family: Helvetica, sans-serif;
     font-size: 15px;
-    background: #ebebeb url("images/gradient.jpg") repeat-x left top;
+    background: none;
 }
 
 h1 {
@@ -100,9 +100,11 @@ div.box {
 }
 
 #display { 
-	background-color: #333; 
-	border:1px solid #333; 
-	display:inline-block
+	background-color: #333;  
+	display:inline-block;
+	border-color: #333;
+	border-style: solid;
+	border-width: 2px 5px 4px 2px;
 }
 
 .rdiv { margin:0; padding:0; text-align: center; vertical-align: middle; }
