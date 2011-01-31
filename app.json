@@ -3,20 +3,20 @@
   "cloneable": false,
   "created": {
     "__class__": "Date",
-    "isoformat": "2011-01-17T04:01:39.828940Z"
+    "isoformat": "2011-01-28T19:06:54.775390Z"
   },
   "icon": "null",
   "modified": {
     "__class__": "Date",
-    "isoformat": "2011-01-17T04:01:39.829065Z"
+    "isoformat": "2011-01-31T21:57:49.666856Z"
   },
-  "owner": "grg021",
+  "owner": "mckoss",
   "readers": [
     "public"
   ],
   "referers": [],
-  "sha1": "d1edac8c1b01128a45af7d721b4c1f9ae5ddba1b",
-  "size": 290,
+  "sha1": "9cd46aed287a019b2902cd875e9bc63a6dd96191",
+  "size": 268,
   "tags": [
     "demo",
     "sample"
