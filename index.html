@@ -21,9 +21,7 @@
         <span>Sorry, no split-flap animation for you! Your browser doesn't support CSS3 animation.</span>
         <a href="javascript:void(0)" onClick="$(this).parent().hide()">Close this</a>
       </div>
-      <div id="title">
-        <span>Flap Display Simulator</span>
-      </div>
+      <h1 id="title"><script>document.write(document.title);</script></h1>
       <div id='display'></div>
       <div id="nav">
         <a id="rev" href="javascript:void(0)" onclick="flipper.rev()" name="rev"></a>
@@ -33,7 +31,22 @@
         <span id="pageof">Page <span id='offset'></span> of <span id='limit'></span></span>
       </div>
       <div id="form">
-        <textarea id='input' rows="10" cols="100"></textarea>
+
+<textarea id='input' rows="10" cols="100">
+Welcome!
+To the split-flap
+Display Simulator
+---
+To display your
+own message
+...
+---
+Just type pages into
+the text box,
+separated by a line
+with only ---.
+</textarea>
+
         <div class='rt'>
           <a href="javascript:void(0)" onclick="flipper.linkToDisplay()">Link to this display</a>
         </div>

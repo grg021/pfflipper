@@ -73,19 +73,17 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         boxH = boxW * 1.25;
         $('#input').focus();
         ns.client = new clientLib.Client(ns);
-        ns.client.saveInterval = 0;  // Turn off auto-save.
         if (document.getElementById('title')) {
             ns.client.addAppBar();
         }
         buildBox(cols, rows);
 
-
         var $cboxa = $("<div class='dv up'><div class='text'><span></span></div></div>" +
                        "<div class='dv down'><div class='text'><span></span></div></div>")
             .height(boxH / 2)
             .width(boxW)
-            .css("line-height", (boxH - 4) + "px"),
-        $cboxb = $("<div class='dv up'><div class='text'><span></span></div></div>" +
+            .css("line-height", (boxH - 4) + "px");
+        var $cboxb = $("<div class='dv up'><div class='text'><span></span></div></div>" +
                    "<div class='dv down'><div class='text'><span></span></div></div>")
             .height(boxH / 2)
             .width(boxW)
@@ -100,6 +98,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         $('#display, #input, #title, #nav, #form').width($("#display").width());
 
         $('#stop').hide();
+        ns.play();
     }
 
     function loopThrough(a, b, box, c) {
