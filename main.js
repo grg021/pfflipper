@@ -6,7 +6,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         rows = 5,
         page = 0,
         strloop = [],
-        prev = [],
         letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         chars = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
         numbers = "0123456789",
@@ -15,7 +14,10 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         boxW = 32,
         boxH = boxW * 1.25,
         curr = 0,
-        wwidth = $(window).width();
+        prv = 1,
+        wwidth = $(window).width(),
+        loopcount = 0,
+        loop = false;
 
     function buildBox(c, r) {
         var i, j,
@@ -23,10 +25,10 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             $cboxb = $("<span id='2' class='spn bottom'></span>"),
             $box = $("<div/>", { "class": "box" }).height(boxH).width(boxW).append($cboxa.clone(), $cboxb.clone()),
             $rdiv = $("<div/>", { "class": "rdiv" });
-        for (j = 0; j < c; j++) {
+        for (j = 0; j < c; j = j + 1) {
             $rdiv.append($box.clone().attr('id', "c_" + j));
         }
-        for (i = 0; i < r; i++) {
+        for (i = 0; i < r; i = i + 1) {
             $("#display").append($rdiv.clone().attr('id', "r_" + i));
         }
     }
@@ -52,19 +54,25 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     jQuery(function () {
         jQuery.support.animation = false;
         jQuery.each(['-webkit-animation', '-moz-animation', '-o-animation', 'animation'], function () {
-            if (document.body.style[this] !== undefined) { jQuery.support.animation = true; }
+            if (document.body.style[this] !== undefined) {
+                jQuery.support.animation = true;
+            }
             return (!jQuery.support.animation);
         });
     });
 
     function onReady() {
-        if (!$.support.animation) { $("#warning").show(); }
+        if (!$.support.animation) {
+            $("#warning").show();
+        }
         boxW = Math.floor((wwidth - 20) / cols - 4);
         boxH = boxW * 1.25;
         $('#input').focus();
         ns.client = new clientLib.Client(ns);
         ns.client.saveInterval = 0;  // Turn off auto-save.
-        if (document.getElementById('title')) { ns.client.addAppBar(); }
+        if (document.getElementById('title')) {
+            ns.client.addAppBar();
+        }
         buildBox(cols, rows);
 
 
@@ -77,10 +85,9 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         $("div.box > span").html($cboxa.clone(), $cboxb.clone());
 
         // resize textarea and title width
-        $('#display').width($("#display").width());
-        $("#input").width($("#display").width());
-        $("#title").width($("#display").width());
-        $("#nav > div").width($("#display").width());
+        $('#display, #input, #title, #nav, #form').width($("#display").width());
+        
+        $('#stop').hide();
     }
 
     function loopThrough(a, b, box, c) {
@@ -91,59 +98,125 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         b2 = box.find("span.bottom div.down div.text");
         a1.parent().removeClass("scale");
         a2.parent().removeClass('scale2');
-        if (a === b) { return; }
+
         if (a !== ' ') {
             stype = letters;
             tmpStart = stype.indexOf(a);
-            if (tmpStart < 0) { stype = numbers; tmpStart = numbers.indexOf(a); }
-            if (tmpStart < 0) { stype = chars; tmpStart = chars.indexOf(a); }
+            if (tmpStart < 0) {
+                stype = numbers;
+                tmpStart = numbers.indexOf(a);
+            }
+            if (tmpStart < 0) {
+                stype = chars;
+                tmpStart = chars.indexOf(a);
+            }
         }
         if (b !== ' ') {
             etype = letters;
             tmpEnd = etype.indexOf(b);
-            if (tmpEnd < 0) { etype = numbers; tmpEnd = numbers.indexOf(b); }
-            if (tmpEnd < 0) { etype = chars; tmpEnd = chars.indexOf(b); }
-            if (a === ' ') { stype = etype; tmpStart = 1; }
+            if (tmpEnd < 0) {
+                etype = numbers;
+                tmpEnd = numbers.indexOf(b);
+            }
+            if (tmpEnd < 0) {
+                etype = chars;
+                tmpEnd = chars.indexOf(b);
+            }
+            if (a === ' ') {
+                stype = etype;
+                tmpStart = 0;
+            }
         } else {
             etype = stype += ' ';
             tmpEnd = etype.indexOf(b);
         }
 
-        if (stype !== etype) { loopthis = stype + " " + etype; tmpEnd = tmpEnd + stype.length + 1; } else { loopthis = etype; }
+        if (stype !== etype) {
+            loopthis = stype + " " + etype;
+            tmpEnd = tmpEnd + stype.length + 1;
+        } else {
+            loopthis = etype;
+        }
 
-        clearInterval(strloop[c]);
+        if (a === b && a === ' ') {
+            loopthis = " ";
+            tmpStart = tmpEnd = 0;
+        }
 
+        if (strloop[c] !== 0 && strloop[c] !== undefined) {
+            clearInterval(strloop[c]);
+            strloop[c] = 0;
+            loopcount = loopcount - 1;
+        }
+
+        loopcount = loopcount + 1;
         a1.parent().addClass("scale");
-        setTimeout(function () { a2.parent().addClass('scale2'); }, duration);
+        setTimeout(function () {
+            a2.parent().addClass('scale2');
+        }, duration);
         strloop[c] = setInterval(function () {
             a1.children("span").text(loopthis.charAt(tmpStart));
             a2.children("span").text(loopthis.charAt(tmpStart));
-            setTimeout(function () { b1.children("span").text(loopthis.charAt(tmpStart)); }, duration / 2);
-            setTimeout(function () { b2.children("span").text(loopthis.charAt(tmpStart - 1)); }, duration / 2);
-            tmpStart++;
+            setTimeout(function () {
+                b1.children("span").text(loopthis.charAt(tmpStart));
+            }, duration / 2);
+            setTimeout(function () {
+                b2.children("span").text(loopthis.charAt(tmpStart - 1));
+            }, duration / 2);
+            tmpStart = tmpStart + 1;
             if (tmpStart === tmpEnd + 1) {
                 clearInterval(strloop[c]);
+                strloop[c] = 0;
                 a1.parent().removeClass("scale");
                 a2.parent().removeClass('scale2');
+                setTimeout(function () {
+                    a2.parent().removeClass('scale2');
+                }, duration);
+                loopcount = loopcount - 1;
+                if (loopcount === 0 && loop) {
+                    playloop = setTimeout(function () {
+                        ns.fwd();
+                    }, psdelay);
+                }
             }
-            if (tmpStart > loopthis.length - 1) { tmpStart = 0; }
+            if (tmpStart > loopthis.length - 1) {
+                tmpStart = 0;
+            }
         }, duration);
     }
 
     function displayText(text, r, c) {
         var a, b, j, box;
-        for (j = 0; j < text.length; j++) {
+
+        for (j = 0; j < text.length; j = j + 1) {
             box = $("#display").find("#r_" + r).find("#c_" + c);
             a = $.trim(box.find('div.text:first > span').text()).toUpperCase();
             b = text[j].toUpperCase();
-            if ($.trim(b)) { box.find('div.text > span').removeClass().addClass("page_" + curr); prev.push(r * cols + c); }
+
+            if ($.trim(b)) {
+                box.removeClass("page_" + prv).addClass("page_" + curr);
+            }
             if (a === '') {
                 loopThrough(' ', b, box, r * cols + c);
             } else {
                 loopThrough(a, b, box, r * cols + c);
             }
-            c++;
+            c = c + 1;
         }
+    }
+
+    function clearPage(page) {
+        var boxid, box, d, s;
+        $("div.page_" + page).each(function (a, b) {
+            box = $(this);
+            if ($.trim(box.find('div.text:first > span').text()) !== '') {
+                d = box.attr('id').split('_')[1];
+                s = box.parent().attr('id').split('_')[1];
+                boxid = parseInt(s, 10) * cols + parseInt(d, 10);
+                box.removeClass("page_" + page);
+                loopThrough(box.find('div.text:first > span').text(), ' ', box, boxid);
+            }
+        });
     }
 
     function clipText(text) {
@@ -156,9 +229,14 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     }
 
     function displayPage(text) {
+
         curr = (curr) ? 0 : 1;
-        if (!text) { ns.resetAll(); return; }
-        var i, textArr = [], r = 0, ll, c, box, s, d, p, ctext;
+        prv = (prv) ? 0 : 1;
+        if (!text) {
+            ns.resetAll();
+            return;
+        }
+        var i, textArr = [], r = 0, ll, c, ctext;
         $("#offset").text(page);
         $("#pageof").show();
 
@@ -166,71 +244,74 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         r = textArr.length - 1;
         r = Math.floor((rows - r) / 2);
 
-        if (prev.length) {
-            for (p in prev) { if (prev[p]) { clearInterval(strloop[prev[p]]); } }
-            prev = [];
-        }
-
-        for (i = 0; i < textArr.length; i++) {
+        for (i = 0; i < textArr.length; i = i + 1) {
             ctext = $.trim(textArr[i]);
             ctext = (ctext.length > cols) ? clipText(ctext) : ctext;
             ll = ctext.length;
             c = Math.floor((cols - ll) / 2);
             displayText(ctext, r, c);
-            r++;
+            r = r + 1;
         }
 
-        $("div.box div.text > span:not(.page_" + curr + ")").each(function (a, b) {
-            box = $(this).closest('.box');
-            if ($.trim(box.find('div.text:first > span').text()) !== '') {
-                d = box.attr('id').split('_')[1];
-                s = box.parent().attr('id').split('_')[1];
-                prev.push(s * cols + d);
-                box.find('div.text > span').removeClass();
-                clearInterval(strloop[s * cols + d]);
-                loopThrough(box.find('div.text:first > span').text(), ' ', box, s * cols + d);
-            }
-        });
+        clearPage(prv);
     }
 
     function fwd() {
         var text = $.trim($("#input").val()),
             arr = text.split(/\n-{1,}\n/);
-        if (!text) { ns.resetAll(); return; }
-        page++;
+        if (!text) {
+            ns.resetAll();
+            return;
+        }
+        page = page + 1;
         page = (page > arr.length) ? 1 : page;
         displayPage($.trim(arr[page - 1]));
         $("#limit").text(arr.length);
     }
 
     function play() {
-        $("#play").hide(1, function () { $("#stop").show(); });
-        page = 0;
-        fwd();
-        playloop = setInterval(function () { fwd(); }, psdelay);
+        $("#play").hide(1, function () {
+            $("#stop").show();
+        });
+        //page = 0;
+        if (page === 0) {
+            fwd();
+        }
+        loop = true;
+        if (loopcount === 0 && loop) {
+            playloop = setTimeout(function () {
+                fwd();
+            }, psdelay);
+        }
     }
 
     function stop() {
-        $("#stop").hide(1, function () { $("#play").show(); });
+        $("#stop").hide(1, function () {
+            $("#play").show();
+        });
         clearInterval(playloop);
-        page = 0;
-        fwd();
+        loop = false;
     }
 
     function resetAll() {
         $("#pageof").hide();
         $("#input").text('');
-        $("div.box div.text > span").text('');
+        clearPage(curr);
         ns.client.setDirty(false);
         clearInterval(playloop);
         page = 0;
-        $("#stop").hide(1, function () { $("#play").show(); });
+        $("#stop").hide(1, function () {
+            $("#play").show();
+        });
     }
 
     function rev() {
         var text = $.trim($("#input").val()),
             arr = text.split(/\n-{1,}\n/);
-        if (!text) { ns.resetAll(); return; }
+        if (!text) {
+            ns.resetAll();
+            return;
+        }
         page = (page) ? page - 1 : 1;
         page = (page < 1) ? arr.length : page;
         displayPage($.trim(arr[page - 1]));
@@ -286,7 +367,9 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
                 success: function (message, status, xhr) {
                     var prop, propCount = 0;
                     for (prop in message.items) {
-                        if (prop) { propCount++; }
+                        if (prop) {
+                            propCount = propCount + 1;
+                        }
                     }
                     saveDoc(ns.client.username + "_" + propCount);
                 }
