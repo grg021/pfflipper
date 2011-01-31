@@ -1,75 +1,43 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
-<head>
-<meta name="generator" content=
-"HTML Tidy for Linux/x86 (vers 25 March 2009), see www.w3.org">
-<title>Flipper Beta</title>
-<link rel="icon" type="image/png" href="/images/icon.png">
-<link rel="apple-touch-icon" href="/images/touch.png">
-<!-- A simple application-specific style sheet -->
-<link rel="stylesheet" type="text/css" href="style.css">
-<link rel="stylesheet" type="text/css" href=
-"/lib/beta/css/client.css">
-<script type="text/javascript" src=
-"http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js">
-</script>
-<script type="text/javascript" src="/lib/beta/js/json2.min.js">
-</script>
-<script type="text/javascript" src="/lib/beta/js/utils.js">
-</script>
-
-<script type="text/javascript" src="main.js">
-</script>
-<script type="text/javascript">
-  // Call the onReady function of the application when the page is loaded.
-  var flipper = namespace.lookup("com.pageforest.flipper");
-  $(document).ready(flipper.onReady);
-</script>
-</head>
-<body>
-<div class="page">
-<div id='main'>
-<div style="text-align:center">
-<div id="warning" style="display:none">
-<span>Sorry, no split-flap animation for you! Your browser doesn't support
-CSS3 animation.</span>
-<a href="javascript:void(0)" onClick="$(this).parent().hide()">Close this
-</a>
-</div>
-</div>
-<div style="text-align:center">
-<div id="title">
-<span>Flap Display Simulator</span>
-</div>
-</div>
-<div>
-<div style='text-align:center'>
-<div id='display'></div>
-</div>
-<div style='text-align:center' id="nav"><a id="rev" href=
-"javascript:void(0)" onclick="flipper.rev()" name="rev">Back</a>
-<a id="play" href="javascript:void(0)" onclick="flipper.play()"
-name="play">Play</a> <a id="stop" href="javascript:void(0)" style=
-"display:none" onclick="flipper.stop()" name="stop">Stop</a> <a id=
-"fwd" href="javascript:void(0)" onclick="flipper.fwd()" name=
-"fwd">Forward</a>
-<div id="pageof" style="display:none">Page <span id=
-'offset'></span> of <span id='limit'></span></div>
-</div>
-</div>
-<div id="form" style="text-align:center;">
-<div style="display:inline-block">
-<div>
-<textarea id='input' rows="10" cols="100">
-</textarea></div>
-<div style="text-align: right">
-<!--<input type='button' id='reset' value='Reset' onclick=
-"flipper.resetAll()">--> <a href="javascript:void(0)" onclick=
-"flipper.linkToDisplay()">Link to this display</a></div>
-</div>
-</div>
-</div>
-</div>
-<!-- page -->
-</body>
+    <head>
+        <title>Split-Flap Display Simulator</title>
+        <link rel="icon" type="image/png" href="/images/icon.png">
+        <link rel="apple-touch-icon" href="/images/touch.png">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="/lib/beta/css/client.css">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+        <script type="text/javascript" src="/lib/beta/js/json2.min.js"></script>
+        <script type="text/javascript" src="/lib/beta/js/utils.js"></script>
+        <script type="text/javascript" src="main.js"></script>
+        <script type="text/javascript">
+          var flipper = namespace.lookup("com.pageforest.flipper");
+          $(document).ready(flipper.onReady);
+        </script>
+    </head>
+    <body>
+        <div id='main'>
+            <div id="warning">
+                <span>Sorry, no split-flap animation for you! Your browser doesn't support CSS3 animation.</span>
+                <a href="javascript:void(0)" onClick="$(this).parent().hide()">Close this</a>
+            </div>
+            <div id="title">
+                <span>Flap Display Simulator</span>
+            </div>
+            <div id='display'></div>
+            <div id="nav">
+                    <a id="rev" href="javascript:void(0)" onclick="flipper.rev()" name="rev">Back</a>
+                    <a id="play" href="javascript:void(0)" onclick="flipper.play()" name="play">Play</a>
+                    <a id="stop" href="javascript:void(0)" onclick="flipper.stop()" name="stop">Stop</a>
+                    <a id="fwd" href="javascript:void(0)" onclick="flipper.fwd()" name="fwd">Forward</a>
+                    <span id="pageof">Page <span id='offset'></span> of <span id='limit'></span></span>
+            </div>
+            <div id="form">
+                <textarea id='input' rows="10" cols="100"></textarea>
+                <div class='rt'>
+                    <a href="javascript:void(0)" onclick="flipper.linkToDisplay()">Link to this display</a>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

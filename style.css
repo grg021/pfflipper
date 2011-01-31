@@ -7,8 +7,11 @@ body {
 }
 
 img { border: 0; }
-div { padding:0; margin:0; }
-div.page { margin: auto; }
+div { padding: 0; margin: 0; }
+#warning, #pageof { display: none;  }
+#pageof { float: right; }
+.rt { text-align: right; }
+#form { display:inline-block; }
 
 label {
     font-size: 24px;
@@ -19,10 +22,11 @@ label {
 }
 
 #main {
-    width:auto;
+    width: auto;
     margin: 0 auto;
-    padding:0;
+    text-align: center;
 }
+
 textarea {
     font-family: "Courier New", Courier, monospace;
     width: 800px;
@@ -121,6 +125,6 @@ div.box {
     border:1px solid #555;
 }
 
-#nav { margin: 2px 0; }
+#nav { margin: 2px 0; display: inline-block; }
 #nav a:hover { border:1px solid #AAA; color: #CCC; }
 #pfAppPanel { z-index:100 }

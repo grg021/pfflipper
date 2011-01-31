@@ -85,10 +85,9 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         $("div.box > span").html($cboxa.clone(), $cboxb.clone());
 
         // resize textarea and title width
-        $('#display').width($("#display").width());
-        $("#input").width($("#display").width());
-        $("#title").width($("#display").width());
-        $("#nav > div").width($("#display").width());
+        $('#display, #input, #title, #nav, #form').width($("#display").width());
+        
+        $('#stop').hide();
     }
 
     function loopThrough(a, b, box, c) {
