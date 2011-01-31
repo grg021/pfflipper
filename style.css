@@ -117,14 +117,23 @@ div.box {
 
 #nav a {
     display: inline-block;
-    background-color: #333;
-    padding: 3px;
+    border: 1px solid transparent;
     margin: 2px 0;
     text-decoration: none;
     color: white;
-    border:1px solid #555;
+    background-image:url('images/controlicon.jpg');
+    height: 24px;
+    width: 35px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
 }
 
+#nav a:hover { border: 1px solid #CCC; }
+#play { background-position: 171.5px -13px; }
+#stop { background-position: 84px -13px; }
+#rev { background-position: 215px -13px; }
+#fwd { background-position: 40px -13px; }
+
 #nav { margin: 2px 0; display: inline-block; }
-#nav a:hover { border:1px solid #AAA; color: #CCC; }
 #pfAppPanel { z-index:100 }
