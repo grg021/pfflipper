@@ -23,7 +23,10 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         var i, j,
             $cboxa = $("<span id='1' class='spn top'></span>"),
             $cboxb = $("<span id='2' class='spn bottom'></span>"),
-            $box = $("<div/>", { "class": "box" }).height(boxH).width(boxW).append($cboxa.clone(), $cboxb.clone()),
+            $box = $("<div/>", { "class": "box" })
+                .height(boxH)
+                .width(boxW)
+                .append($cboxa.clone(), $cboxb.clone()),
             $rdiv = $("<div/>", { "class": "rdiv" });
         for (j = 0; j < c; j = j + 1) {
             $rdiv.append($box.clone().attr('id', "c_" + j));
@@ -53,12 +56,13 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 
     jQuery(function () {
         jQuery.support.animation = false;
-        jQuery.each(['-webkit-animation', '-moz-animation', '-o-animation', 'animation'], function () {
-            if (document.body.style[this] !== undefined) {
-                jQuery.support.animation = true;
-            }
-            return (!jQuery.support.animation);
-        });
+        jQuery.each(['-webkit-animation', '-moz-animation', '-o-animation', 'animation'],
+                    function () {
+                        if (document.body.style[this] !== undefined) {
+                            jQuery.support.animation = true;
+                        }
+                        return (!jQuery.support.animation);
+                    });
     });
 
     function onReady() {
@@ -76,8 +80,16 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         buildBox(cols, rows);
 
 
-        var $cboxa = $("<div class='dv up'><div class='text'><span></span></div></div><div class='dv down'><div class='text'><span></span></div></div>").height(boxH / 2).width(boxW).css("line-height", (boxH - 4) + "px"),
-            $cboxb = $("<div class='dv up'><div class='text'><span></span></div></div><div class='dv down'><div class='text'><span></span></div></div>").height(boxH / 2).width(boxW).css("line-height", (boxH - 4) + "px");
+        var $cboxa = $("<div class='dv up'><div class='text'><span></span></div></div>" +
+                       "<div class='dv down'><div class='text'><span></span></div></div>")
+            .height(boxH / 2)
+            .width(boxW)
+            .css("line-height", (boxH - 4) + "px"),
+        $cboxb = $("<div class='dv up'><div class='text'><span></span></div></div>" +
+                   "<div class='dv down'><div class='text'><span></span></div></div>")
+            .height(boxH / 2)
+            .width(boxW)
+            .css("line-height", (boxH - 4) + "px");
 
         // resize font based on bounding box size
         $("div.box > span").text('W');
@@ -86,7 +98,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 
         // resize textarea and title width
         $('#display, #input, #title, #nav, #form').width($("#display").width());
-        
+
         $('#stop').hide();
     }
 

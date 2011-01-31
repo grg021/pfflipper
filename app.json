@@ -1,5 +1,5 @@
 {
-  "application": "aflip",
+  "application": "flipper",
   "cloneable": false,
   "created": {
     "__class__": "Date",
@@ -21,8 +21,8 @@
     "demo",
     "sample"
   ],
-  "title": "Aflip",
-  "url": "http://aflip.pageforest.com/",
+  "title": "Flap Board Simulator",
+  "url": "http://flipper.pageforest.com/",
   "writers": [
     "grg021"
   ]
