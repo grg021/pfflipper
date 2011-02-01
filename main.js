@@ -345,6 +345,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 
     function getDoc() {
         return {
+            "title": "Split Flap Display",
             "readers" : ["public"],
             "blob": {
                 version: 1,
@@ -353,46 +354,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         };
     }
 
-    function saveDoc(docid) {
-        var data = {
-            title: "Flipper",
-            readers: ["public"],
-            blob: {version: "1", text: $('#input').val()}
-        };
-        $.ajax({
-            type: "PUT",
-            url: "/docs/" + docid,
-            data: JSON.stringify(data),
-            success: function (data) {
-                ns.client.setDirty(false);
-                window.location.replace("display.html#" + docid);
-            }
-        });
-    }
-
     function linkToDisplay() {
-        var isSignedIn = ns.client.username !== undefined;
-        if (!isSignedIn) {
-            ns.client.save();
-            return;
-        }
-        if (ns.client.docid) {
-            saveDoc(ns.client.docid);
-        } else {
-            $.ajax({
-                type: 'GET',
-                url: "/docs/?method=list&keysonly=true",
-                success: function (message, status, xhr) {
-                    var prop, propCount = 0;
-                    for (prop in message.items) {
-                        if (prop) {
-                            propCount = propCount + 1;
-                        }
-                    }
-                    saveDoc(ns.client.username + "_" + propCount);
-                }
-            });
-        }
+        window.open('display.html' + window.location.hash);
         return false;
     }
 
@@ -404,7 +367,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         'stop' : stop,
         'rev' : rev,
         'fwd' : fwd,
-        'resetAll' : resetAll,
         'linkToDisplay' : linkToDisplay
     });
 
