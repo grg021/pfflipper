@@ -245,12 +245,24 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         }
     }
 
+    function resetAll() {
+        $("#pageof").hide();
+        $("#input").text('');
+        clearPage(curr);
+        ns.client.setDirty(false);
+        clearInterval(playloop);
+        page = 0;
+        $("#stop").hide(1, function () {
+            $("#play").show();
+        });
+    }
+
     function displayPage(text) {
 
         curr = (curr) ? 0 : 1;
         prv = (prv) ? 0 : 1;
         if (!text) {
-            ns.resetAll();
+            resetAll();
             return;
         }
         var i, textArr = [], r = 0, ll, c, ctext;
@@ -277,7 +289,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         var text = $("#input").val(),
             arr = text.split(newpage).clean();
         if (!$.trim(text)) {
-            ns.resetAll();
+            resetAll();
             return;
         }
         clearInterval(playloop);
@@ -308,18 +320,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         });
         clearInterval(playloop);
         loop = false;
-    }
-
-    function resetAll() {
-        $("#pageof").hide();
-        $("#input").text('');
-        clearPage(curr);
-        ns.client.setDirty(false);
-        clearInterval(playloop);
-        page = 0;
-        $("#stop").hide(1, function () {
-            $("#play").show();
-        });
     }
 
     function rev() {
