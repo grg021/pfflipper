@@ -260,7 +260,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         textArr = text.split("\n");
 
         r = textArr.length;
-        console.log(r);
         r = Math.floor(((rows - r) / 2) + 1) - 1;
         for (i = 0; i < textArr.length; i = i + 1) {
             ctext = $.trim(textArr[i]);
