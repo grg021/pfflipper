@@ -75,6 +75,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         };
 
         wwidth = $('#main').width();
+        wwidth = (wwidth) ? wwidth : $(window).width();
         if (!$.support.animation) {
             $("#warning").show();
         }

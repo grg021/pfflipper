@@ -11,7 +11,6 @@ div { padding: 0; margin: 0; }
 #warning, #pageof { display: none;  }
 #pageof { position: absolute; top: 10px; right: 0px; }
 .rt { text-align: right; }
-#form { display:inline-block; }
 
 label {
     font-size: 24px;
@@ -23,6 +22,11 @@ label {
 
 #main {
     width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#maind {
     margin: 0 auto;
     text-align: center;
 }
@@ -46,7 +50,6 @@ div.box {
 
 #display {
     background-color: #333;
-    display:inline-block;
     border-color: #333;
     border-style: solid;
     border-width: 2px 5px 4px 2px;
@@ -127,5 +130,6 @@ div.box {
 #rev { background-position: 501px -36px; }
 #fwd { background-position: 468px -36px; }
 
-#nav { margin: 2px 0; display: inline-block; position: relative;}
+#nav { margin: 2px 0; position: relative;}
 #pfAppPanel { z-index:100 }
+.ibox { display: inline-block; }
