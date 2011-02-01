@@ -15,9 +15,10 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         boxH = boxW * 1.25,
         curr = 0,
         prv = 1,
-        wwidth = $(window).width(),
+        wwidth,
         loopcount = 0,
-        loop = false;
+        loop = false,
+        newpage = /\n-{3,}\n/m;
 
     function buildBox(c, r) {
         var i, j,
@@ -36,7 +37,15 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         }
     }
 
-    (jQuery)(function ($) {
+    function onReady() {
+        jQuery.support.animation = false;
+        jQuery.each(['-webkit-animation', '-moz-animation', '-o-animation', 'animation'],
+                    function () {
+                        if (document.body.style[this] !== undefined) {
+                            jQuery.support.animation = true;
+                        }
+                        return (!jQuery.support.animation);
+                    });
         $.fn.textfill = function (options) {
             var fontSize = options.maxFontPixels,
                 ourText = $('span', this),
@@ -52,20 +61,15 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             } while (textHeight > maxHeight || (textWidth > maxWidth && fontSize > 3));
             return this;
         };
-    });
+        Array.prototype.clean = function () {
+            while ($.trim(this[this.length - 1]) === '' && this.length) {
+                this.splice(this.length - 1, 1);
+            }
+            return this;
+        };
 
-    jQuery(function () {
-        jQuery.support.animation = false;
-        jQuery.each(['-webkit-animation', '-moz-animation', '-o-animation', 'animation'],
-                    function () {
-                        if (document.body.style[this] !== undefined) {
-                            jQuery.support.animation = true;
-                        }
-                        return (!jQuery.support.animation);
-                    });
-    });
-
-    function onReady() {
+        wwidth = $('#main').width();
+        wwidth = (wwidth) ? wwidth : $(window).width();
         if (!$.support.animation) {
             $("#warning").show();
         }
@@ -82,8 +86,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
                        "<div class='dv down'><div class='text'><span></span></div></div>")
             .height(boxH / 2)
             .width(boxW)
-            .css("line-height", (boxH - 4) + "px");
-        var $cboxb = $("<div class='dv up'><div class='text'><span></span></div></div>" +
+            .css("line-height", (boxH - 4) + "px"),
+            $cboxb = $("<div class='dv up'><div class='text'><span></span></div></div>" +
                    "<div class='dv down'><div class='text'><span></span></div></div>")
             .height(boxH / 2)
             .width(boxW)
@@ -98,7 +102,9 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         $('#display, #input, #title, #nav, #form').width($("#display").width());
 
         $('#stop').hide();
-        ns.play();
+        if ($('#input').text()) {
+            ns.play();
+        }
     }
 
     function loopThrough(a, b, box, c) {
@@ -252,9 +258,9 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         $("#pageof").show();
 
         textArr = text.split("\n");
-        r = textArr.length - 1;
-        r = Math.floor((rows - r) / 2);
 
+        r = textArr.length;
+        r = Math.floor(((rows - r) / 2) + 1) - 1;
         for (i = 0; i < textArr.length; i = i + 1) {
             ctext = $.trim(textArr[i]);
             ctext = (ctext.length > cols) ? clipText(ctext) : ctext;
@@ -268,15 +274,16 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     }
 
     function fwd() {
-        var text = $.trim($("#input").val()),
-            arr = text.split(/\n-{1,}\n/);
-        if (!text) {
+        var text = $("#input").val(),
+            arr = text.split(newpage).clean();
+        if (!$.trim(text)) {
             ns.resetAll();
             return;
         }
+        clearInterval(playloop);
         page = page + 1;
         page = (page > arr.length) ? 1 : page;
-        displayPage($.trim(arr[page - 1]));
+        displayPage(arr[page - 1]);
         $("#limit").text(arr.length);
     }
 
@@ -284,7 +291,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         $("#play").hide(1, function () {
             $("#stop").show();
         });
-        //page = 0;
         if (page === 0) {
             fwd();
         }
@@ -317,15 +323,16 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     }
 
     function rev() {
-        var text = $.trim($("#input").val()),
-            arr = text.split(/\n-{1,}\n/);
-        if (!text) {
+        var text = $("#input").val(),
+            arr = text.split(newpage).clean();
+        if (!$.trim(text)) {
             ns.resetAll();
             return;
         }
+        clearInterval(playloop);
         page = (page) ? page - 1 : 1;
         page = (page < 1) ? arr.length : page;
-        displayPage($.trim(arr[page - 1]));
+        displayPage(arr[page - 1]);
         $("#limit").text(arr.length);
     }
 
