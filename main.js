@@ -100,8 +100,15 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 
         // resize textarea and title width
         $('#display, #input, #title, #nav, #form').width($("#display").width());
-
         $('#stop').hide();
+        
+        if (window.location.hash !==  '') {
+            $('#input').val('');
+        } else {
+            if ($('#input').val()) {
+                ns.play();
+            }
+        }
     }
 
     function loopThrough(a, b, box, c) {
@@ -334,10 +341,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     }
 
     function setDoc(json) {
-        if (json) {
+        if (json.blob.text) {
             $('#input').val(json.blob.text);
-            ns.play();
-        } else if ($('#input').val()) {
             ns.play();
         }
     }
