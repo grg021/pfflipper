@@ -102,9 +102,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         $('#display, #input, #title, #nav, #form').width($("#display").width());
 
         $('#stop').hide();
-        if ($('#input').text()) {
-            ns.play();
-        }
     }
 
     function loopThrough(a, b, box, c) {
@@ -339,6 +336,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     function setDoc(json) {
         if (json) {
             $('#input').val(json.blob.text);
+            ns.play();
+        } else if ($('#input').val()) {
             ns.play();
         }
     }
