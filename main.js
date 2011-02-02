@@ -24,10 +24,11 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         var i, j,
             $cboxa = $("<span id='1' class='spn top'></span>"),
             $cboxb = $("<span id='2' class='spn bottom'></span>"),
+            $cboxc = $("<span id='3' class='spn'></span>"),
             $box = $("<div/>", { "class": "box" })
                 .height(boxH)
                 .width(boxW)
-                .append($cboxa.clone(), $cboxb.clone()),
+                .append($cboxa.clone(), $cboxb.clone(), $cboxc.clone()),
             $rdiv = $("<div/>", { "class": "rdiv" });
         for (j = 0; j < c; j = j + 1) {
             $rdiv.append($box.clone().attr('id', "c_" + j));
@@ -38,6 +39,18 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     }
 
     function onReady() {
+        $.fn.addEventListener = function(eventType, handler, scope, eventData){
+            if (arguments.length < 2) {
+                return;
+            }
+            var fn = handler;
+            if (arguments.length > 2) {
+                fn = $.proxy(handler, scope);
+            }
+            return this.each(function(){
+                $(this).bind(eventType, eventData, fn);
+            });
+        };
         jQuery.support.animation = false;
         jQuery.each(['-webkit-animation', '-moz-animation', '-o-animation', 'animation'],
                     function () {
@@ -87,8 +100,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             .height(boxH / 2)
             .width(boxW)
             .css("line-height", (boxH - 4) + "px"),
-            $cboxb = $("<div class='dv up'><div class='text'><span></span></div></div>" +
-                   "<div class='dv down'><div class='text'><span></span></div></div>")
+            $cboxb = $("<div class='dv'><div class='text'><span></span></div></div>" +
+                   "<div class='dv'><div class='text'><span></span></div></div>")
             .height(boxH / 2)
             .width(boxW)
             .css("line-height", (boxH - 4) + "px");
@@ -96,12 +109,13 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         // resize font based on bounding box size
         $("div.box > span").text('W');
         $("div.box").textfill({ maxFontPixels: 72 });
-        $("div.box > span").html($cboxa.clone(), $cboxb.clone());
+        $("div.box > span").html($cboxb.clone());
+        $("div.box > span:not(#3)").html($cboxa.clone());
 
         // resize textarea and title width
         $('#display, #input, #title, #nav, #form').width($("#display").width());
         $('#stop').hide();
-        
+
         if (window.location.hash !==  '') {
             $('#input').val('');
         } else {
@@ -117,8 +131,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         a2 = box.find("span.top div.down div.text");
         b1 = box.find("span.bottom div.up div.text");
         b2 = box.find("span.bottom div.down div.text");
-        a1.parent().removeClass("scale");
-        a2.parent().removeClass('scale2');
 
         if (a !== ' ') {
             stype = letters;
@@ -169,41 +181,88 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             strloop[c] = 0;
             loopcount = loopcount - 1;
         }
+        var ctra = tmpStart;
+        b1.parent().addEventListener("webkitTransitionEnd transitionend", function(e) {
+            a1.parent().parent().css('z-index', '30');
+            b1.parent().parent().css('z-index', '15');
+            
+            b1.parent().removeClass('scalea');
+            a2.parent().addClass('scaleb');
+            b2.parent().removeClass('scaleb');
+            ctra++;
+            b1.children("span").text(loopthis.charAt(ctra));
+            a2.children("span").text(loopthis.charAt(ctra - 1));
+            if (ctra !== tmpEnd + 1) {
+               a1.parent().addClass('scalea');
+            } else {
+                a1.parent().removeClass('scalea');
+                a1.children("span").text(loopthis.charAt(ctra-1));
+            }
+            if (ctra > loopthis.length - 1) {
+                ctra = 0;
+            }
+        }, false);
 
-        loopcount = loopcount + 1;
-        a1.parent().addClass("scale");
-        setTimeout(function () {
-            a2.parent().addClass('scale2');
-        }, duration);
-        strloop[c] = setInterval(function () {
-            a1.children("span").text(loopthis.charAt(tmpStart));
-            a2.children("span").text(loopthis.charAt(tmpStart));
-            setTimeout(function () {
-                b1.children("span").text(loopthis.charAt(tmpStart));
-            }, duration / 2);
-            setTimeout(function () {
-                b2.children("span").text(loopthis.charAt(tmpStart - 1));
-            }, duration / 2);
-            tmpStart = tmpStart + 1;
-            if (tmpStart === tmpEnd + 1) {
-                clearInterval(strloop[c]);
-                strloop[c] = 0;
-                a1.parent().removeClass("scale");
-                a2.parent().removeClass('scale2');
-                setTimeout(function () {
-                    a2.parent().removeClass('scale2');
-                }, duration);
-                loopcount = loopcount - 1;
-                if (loopcount === 0 && loop) {
-                    playloop = setTimeout(function () {
-                        ns.fwd();
-                    }, psdelay);
-                }
+        a1.parent().addEventListener("webkitTransitionEnd transitionend", function(e) {
+            b1.parent().parent().css('z-index', '30');
+            a1.parent().parent().css('z-index', '15');
+            
+            a1.parent().removeClass('scalea');
+            b2.parent().addClass('scaleb');
+            a2.parent().removeClass('scaleb');
+            ctra++;
+            a1.children("span").text(loopthis.charAt(ctra));
+            b2.children("span").text(loopthis.charAt(ctra-1));
+            if (ctra !== tmpEnd + 1) {
+                b1.parent().addClass('scalea');
+            } else {
+                b1.parent().removeClass('scalea');
+                b1.children("span").text(loopthis.charAt(ctra-1));
             }
-            if (tmpStart > loopthis.length - 1) {
-                tmpStart = 0;
+            if (ctra > loopthis.length - 1) {
+                ctra = 0;
             }
-        }, duration);
+        }, false);
+        
+        if (tmpStart !== tmpEnd + 1) {
+            b1.children("span").text(loopthis.charAt(ctra));
+            a1.parent().addClass('scalea');
+        } else { console.log('equal');}
+
+        // loopcount = loopcount + 1;
+        // a1.parent().addClass("scale");
+        // setTimeout(function () {
+            // a2.parent().addClass('scale2');
+        // }, duration);
+        // strloop[c] = setInterval(function () {
+            // a1.children("span").text(loopthis.charAt(tmpStart));
+            // a2.children("span").text(loopthis.charAt(tmpStart));
+            // setTimeout(function () {
+                // b1.children("span").text(loopthis.charAt(tmpStart));
+            // }, duration / 2);
+            // setTimeout(function () {
+                // b2.children("span").text(loopthis.charAt(tmpStart - 1));
+            // }, duration / 2);
+            // tmpStart = tmpStart + 1;
+            // if (tmpStart === tmpEnd + 1) {
+                // clearInterval(strloop[c]);
+                // strloop[c] = 0;
+                // a1.parent().removeClass("scale");
+                // a2.parent().removeClass('scale2');
+                // setTimeout(function () {
+                    // a2.parent().removeClass('scale2');
+                // }, duration);
+                // loopcount = loopcount - 1;
+                // if (loopcount === 0 && loop) {
+                    // playloop = setTimeout(function () {
+                        // ns.fwd();
+                    // }, psdelay);
+                // }
+            // }
+            // if (tmpStart > loopthis.length - 1) {
+                // tmpStart = 0;
+            // }
+        // }, duration);
     }
 
     function displayText(text, r, c) {

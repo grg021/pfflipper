@@ -100,6 +100,7 @@ div.box {
 .dv > div { height:200%; }
 .spn.bottom { z-index:10 }
 .spn.top { z-index:20 }
+.dv.up {-webkit-transform-origin: 100% 100%; -moz-transform-origin: 100% 100%; }
 
 .dv {
     background-color: #555;
@@ -133,3 +134,21 @@ div.box {
 #nav { margin: 2px 0; position: relative;}
 #pfAppPanel { z-index:100 }
 .ibox { display: inline-block; }
+.scalea {
+    -webkit-transition: -webkit-transform 0.08s linear 0s;
+    -webkit-transform: scaley(0) skew(5deg, 0deg); 
+    -moz-transition: -moz-transform 0.08s linear 0s;
+    -moz-transform: scaley(0) skew(5deg, 0deg);
+}
+.scaleb { 
+    -webkit-transition: -webkit-transform 0.08s linear 0s;  
+    -webkit-transform: scaley(1) skew(0deg, 0deg)  !important;
+    -moz-transition: -moz-transform 0.08s linear  0s;  
+    -moz-transform: scaley(1) skew(0deg, 0deg)  !important;
+}
+.dv.down {
+    -webkit-transform-origin: 0% 0%;
+    -moz-transform-origin: 0% 0%;
+    -webkit-transform: scaley(0) skew(-5deg, 0deg);
+    -moz-transform: scaley(0) skew(-5deg, 0deg); 
+}
