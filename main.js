@@ -1,20 +1,21 @@
 /*global $, clearInterval, setTimeout, setInterval, namespace, jQuery, window, document, Modernizr */
 namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     var clientLib = namespace.lookup('com.pageforest.client'),
-        playloop,
-        cols = 21,
-        rows = 5,
-        page = 0,
         letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         chars = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
         numbers = "0123456789",
-        psdelay = 5000, // page switch delay
-        boxW = 32,
-        boxH = boxW * 1.25,
+        playloop,
+        wwidth,
+        boxW,
+        boxH,
+        boxflag = [],
+        psdelay = 5000,
+        loopcount = 0,
+        cols = 21,
+        rows = 5,
+        page = 0,
         curr = 0,
         prv = 1,
-        wwidth,
-        loopcount = 0,
         loop = false,
         newpage = /\n-{3,}\n/m;
 
@@ -156,8 +157,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         };
     }
 
-    function loopThrough(a, b, box) {
-        var tmpStart, tmpEnd, loopthis, a1, a2, b1, b2, c2, ctra, index;
+    function loopThrough(a, b, box, c) {
+        var tmpStart, tmpEnd, loopthis, a1, a2, b1, b2, c2, index;
         a1 = box.find("span.top div.up div.text");
         a2 = box.find("span.top div.down div.text");
         b1 = box.find("span.bottom div.up div.text");
@@ -169,7 +170,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         tmpEnd = index.tmpEnd;
         loopthis = index.loopthis;
 
-        ctra = tmpStart;
         b1.parent().unbind().bind("webkitTransitionEnd transitionend", function (e) {
             a1.parent().parent().removeClass('below').addClass('above');
             b1.parent().parent().removeClass('above').addClass('below');
@@ -178,20 +178,25 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             b1.parent().removeClass('scalea');
             b2.parent().removeClass('scaleb');
 
-            a1.children("span").text(loopthis.charAt(ctra));
-            a2.children("span").text(loopthis.charAt(ctra));
-            b1.children("span").text(loopthis.charAt(ctra + 1));
-            c2.children("span").text(loopthis.charAt(ctra - 1));
-            ctra = ctra + 1;
-            if (ctra !== tmpEnd + 1) {
+            a1.children("span").text(loopthis.charAt(tmpStart));
+            a2.children("span").text(loopthis.charAt(tmpStart));
+            b1.children("span").text(loopthis.charAt(tmpStart + 1));
+            c2.children("span").text(loopthis.charAt(tmpStart - 1));
+            tmpStart = tmpStart + 1;
+            if (tmpStart !== tmpEnd + 1) {
                 a1.parent().addClass('scalea');
             } else {
                 a1.parent().removeClass('scalea');
                 loopcount = loopcount - 1;
-                console.log("min " + b + " " + loopcount);
+                boxflag[c] = false;
+                if (loopcount === 0 && loop) {
+                    playloop = setTimeout(function () {
+                        ns.fwd();
+                    }, psdelay);
+                }
             }
-            if (ctra > loopthis.length) {
-                ctra = 0;
+            if (tmpStart > loopthis.length) {
+                tmpStart = 0;
             }
         });
 
@@ -203,32 +208,36 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             a1.parent().removeClass('scalea');
             a2.parent().removeClass('scaleb');
 
-            b1.children("span").text(loopthis.charAt(ctra));
-            b2.children("span").text(loopthis.charAt(ctra));
-            a1.children("span").text(loopthis.charAt(ctra + 1));
-            c2.children("span").text(loopthis.charAt(ctra - 1));
-            ctra = ctra + 1;
-            if (ctra !== tmpEnd + 1) {
+            b1.children("span").text(loopthis.charAt(tmpStart));
+            b2.children("span").text(loopthis.charAt(tmpStart));
+            a1.children("span").text(loopthis.charAt(tmpStart + 1));
+            c2.children("span").text(loopthis.charAt(tmpStart - 1));
+            tmpStart = tmpStart + 1;
+            if (tmpStart !== tmpEnd + 1) {
                 b1.parent().addClass('scalea');
             } else {
                 b1.parent().removeClass('scalea');
                 loopcount = loopcount - 1;
-                console.log("min " + b + " " + loopcount);
+                boxflag[c] = false;
+                if (loopcount === 0 && loop) {
+                    playloop = setTimeout(function () {
+                        ns.fwd();
+                    }, psdelay);
+                }
             }
-            if (ctra > loopthis.length) {
-                ctra = 0;
+            if (tmpStart > loopthis.length) {
+                tmpStart = 0;
             }
         });
-
         if (a !== b) {
-            loopcount = loopcount + 1;
-            console.log("add " + b + " " + loopcount);
+            loopcount = (boxflag[c] !== true) ? loopcount + 1 : loopcount;
+            boxflag[c] = true;
             if (b1.parent().parent().hasClass('above')) {
                 b1.parent().addClass('scalea');
-                a1.children("span").text(loopthis.charAt(ctra));
+                a1.children("span").text(loopthis.charAt(tmpStart));
             } else {
                 a1.parent().addClass('scalea');
-                b1.children("span").text(loopthis.charAt(ctra));
+                b1.children("span").text(loopthis.charAt(tmpStart));
             }
         }
     }
@@ -240,29 +249,23 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             box = $("#display").find("#r_" + r).find("#c_" + c);
             a = $.trim(box.find('.above div.text:first > span').text()).toUpperCase();
             b = text[j].toUpperCase();
-
-            if ($.trim(b)) {
-                box.removeClass("page_" + prv).addClass("page_" + curr);
-            }
-            if (a === '') {
-                loopThrough(' ', b, box);
-            } else {
-                loopThrough(a, b, box);
-            }
+            box.removeClass("page_" + prv).addClass("page_" + curr);
+            a = (a === '') ? ' ' : a;
+            loopThrough(a, b, box, r * cols + c);
             c = c + 1;
         }
     }
 
-    function clearPage(page) {
-        var box, d, s;
-        $("div.page_" + page).each(function (a, b) {
+    function clearPage(flag) {
+        var box, aa, d, s, boxid;
+        $("div.page_" + flag).each(function (a, b) {
             box = $(this);
-            if ($.trim(box.find('div.text:first > span').text()) !== '') {
-                d = box.attr('id').split('_')[1];
-                s = box.parent().attr('id').split('_')[1];
-                box.removeClass("page_" + page);
-                loopThrough($.trim(box.find('.above div.text:first > span').text()).toUpperCase(), ' ', box);
-            }
+            aa = $.trim(box.find('.above div.text:first > span').text());
+            d = box.attr('id').split('_')[1];
+            s = box.parent().attr('id').split('_')[1];
+            boxid = parseInt(s, 10) * cols + parseInt(d, 10);
+            box.removeClass("page_" + flag);
+            loopThrough(aa, ' ', box, boxid);
         });
     }
 
@@ -288,7 +291,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     }
 
     function displayPage(text) {
-        console.log(loopcount);
         curr = (curr) ? 0 : 1;
         prv = (prv) ? 0 : 1;
         if (!text) {
