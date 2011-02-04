@@ -62,35 +62,6 @@ div.box {
     vertical-align: middle;
 }
 
-@-webkit-keyframes spin {
-    0% {
-        -webkit-transform-origin: 100% 100%;
-        -webkit-transform: rotateX(0deg) skew(0deg, 0deg);
-        background-color: #555;
-    }
-    100% {
-        -webkit-transform-origin: 100% 100%;
-        -webkit-transform: rotateX(90deg) skew(10deg, 0deg);
-        background-color: #777;
-
-    }
-}
-
-@-webkit-keyframes spin2 {
-    0% {
-        -webkit-transform-origin: 0% 0%;
-        -webkit-transform: rotateX(90deg) skew(-5deg, 0deg);
-        background-color: #777;
-    }
-    100% {
-        -webkit-transform-origin: 0% 0%;
-        -webkit-transform: rotateX(0deg) skew(0deg, 0deg);
-        background-color: #555;
-    }
-}
-
-.scale2 { -webkit-animation: spin2 0.08s infinite linear; }
-.scale { -webkit-animation: spin 0.08s infinite linear; }
 .dv > div > span { width:100%; vertical-align:middle }
 .down > div { position:relative; top:-100%; }
 .box span { display:inline-block }
