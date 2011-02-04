@@ -9,6 +9,7 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
     <script type="text/javascript" src="/lib/beta/js/json2.min.js"></script>
     <script type="text/javascript" src="/lib/beta/js/utils.js"></script>
+    <script type="text/javascript" src="modernizr-1.6.min.js"></script>
     <script type="text/javascript" src="main.js"></script>
     <script type="text/javascript">
       var flipper = namespace.lookup("com.pageforest.flipper");
@@ -18,7 +19,7 @@
   <body>
     <div id='main'>
       <div id="warning" class='ibox'>
-        <span>Sorry, no split-flap animation for you! Your browser doesn't support CSS3 animation.</span>
+        <span>Sorry, no split-flap animation for you! Your browser doesn't support CSS3 transform/transition.</span>
         <a href="javascript:void(0)" onClick="$(this).parent().hide()">Close this</a>
       </div>
       <h1 id="title" class='ibox'><script>document.write(document.title);</script></h1>

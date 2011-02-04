@@ -1,15 +1,13 @@
-/*global $, clearInterval, setTimeout, setInterval, namespace, jQuery, window, document */
+/*global $, clearInterval, setTimeout, setInterval, namespace, jQuery, window, document, Modernizr */
 namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     var clientLib = namespace.lookup('com.pageforest.client'),
         playloop,
         cols = 21,
         rows = 5,
         page = 0,
-        strloop = [],
         letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         chars = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
         numbers = "0123456789",
-        duration = 80, // letter to letter transition duration
         psdelay = 5000, // page switch delay
         boxW = 32,
         boxH = boxW * 1.25,
@@ -22,8 +20,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 
     function buildBox(c, r) {
         var i, j,
-            $cboxa = $("<span id='1' class='spn top'></span>"),
-            $cboxb = $("<span id='2' class='spn bottom'></span>"),
+            $cboxa = $("<span id='1' class='spn top above'></span>"),
+            $cboxb = $("<span id='2' class='spn bottom below'></span>"),
             $cboxc = $("<span id='3' class='spn'></span>"),
             $box = $("<div/>", { "class": "box" })
                 .height(boxH)
@@ -39,14 +37,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     }
 
     function onReady() {
-        jQuery.support.animation = false;
-        jQuery.each(['-webkit-animation', '-moz-animation', '-o-animation', 'animation'],
-                    function () {
-                        if (document.body.style[this] !== undefined) {
-                            jQuery.support.animation = true;
-                        }
-                        return (!jQuery.support.animation);
-                    });
         $.fn.textfill = function (options) {
             var fontSize = options.maxFontPixels,
                 ourText = $('span', this),
@@ -69,11 +59,12 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             return this;
         };
 
-        wwidth = $('#main').width();
-        wwidth = (wwidth) ? wwidth : $(window).width();
-        if (!$.support.animation) {
+        if (!Modernizr.csstransforms || !Modernizr.csstransitions) {
             $("#warning").show();
         }
+
+        wwidth = $('#main').width();
+        wwidth = (wwidth) ? wwidth : $(window).width();
         boxW = Math.floor((wwidth - 20) / cols - 4);
         boxH = boxW * 1.25;
         $('#input').focus();
@@ -113,14 +104,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         }
     }
 
-    function loopThrough(a, b, box, c) {
-        var tmpStart, tmpEnd, stype, etype, loopthis, a1, a2, b1, b2, c2;
-        a1 = box.find("span.top div.up div.text");
-        a2 = box.find("span.top div.down div.text");
-        b1 = box.find("span.bottom div.up div.text");
-        b2 = box.find("span.bottom div.down div.text");
-        c2 = box.find("span#3 div.down div.text");
-
+    function getIndex(a, b) {
+        var stype, etype, tmpStart, tmpEnd, loopthis;
         if (a !== ' ') {
             stype = letters;
             tmpStart = stype.indexOf(a);
@@ -164,97 +149,88 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             loopthis = " ";
             tmpStart = tmpEnd = 0;
         }
+        return {
+            tmpStart : tmpStart,
+            tmpEnd : tmpEnd,
+            loopthis : loopthis
+        };
+    }
 
-        if (strloop[c] !== 0 && strloop[c] !== undefined) {
-            clearInterval(strloop[c]);
-            strloop[c] = 0;
-            loopcount = loopcount - 1;
-        }
-        var ctra = tmpStart;
-        b1.parent().bind("webkitTransitionEnd transitionend", {}, function (e) {
-            a1.parent().parent().css('z-index', '30');
-            b1.parent().parent().css('z-index', '15');
-            
-            b1.parent().removeClass('scalea');
+    function loopThrough(a, b, box) {
+        var tmpStart, tmpEnd, loopthis, a1, a2, b1, b2, c2, ctra, index;
+        a1 = box.find("span.top div.up div.text");
+        a2 = box.find("span.top div.down div.text");
+        b1 = box.find("span.bottom div.up div.text");
+        b2 = box.find("span.bottom div.down div.text");
+        c2 = box.find("span#3 div.down div.text");
+
+        index = getIndex(a, b);
+        tmpStart = index.tmpStart;
+        tmpEnd = index.tmpEnd;
+        loopthis = index.loopthis;
+
+        ctra = tmpStart;
+        b1.parent().unbind().bind("webkitTransitionEnd transitionend", function (e) {
+            a1.parent().parent().removeClass('below').addClass('above');
+            b1.parent().parent().removeClass('above').addClass('below');
+
             a2.parent().addClass('scaleb');
+            b1.parent().removeClass('scalea');
             b2.parent().removeClass('scaleb');
-            b1.children("span").text(loopthis.charAt(ctra));
-            a2.children("span").text(loopthis.charAt(ctra - 1));
-            c2.children("span").text(loopthis.charAt(ctra - 2));
+
+            a1.children("span").text(loopthis.charAt(ctra));
+            a2.children("span").text(loopthis.charAt(ctra));
+            b1.children("span").text(loopthis.charAt(ctra + 1));
+            c2.children("span").text(loopthis.charAt(ctra - 1));
+            ctra = ctra + 1;
             if (ctra !== tmpEnd + 1) {
                 a1.parent().addClass('scalea');
             } else {
                 a1.parent().removeClass('scalea');
-                a1.children("span").text(loopthis.charAt(ctra - 1));
+                loopcount = loopcount - 1;
+                console.log("min " + b + " " + loopcount);
             }
-            if (ctra > loopthis.length - 1) {
+            if (ctra > loopthis.length) {
                 ctra = 0;
             }
-            ctra++;
         });
 
-        a1.parent().bind("webkitTransitionEnd transitionend", {}, function (e) {
-            b1.parent().parent().css('z-index', '30');
-            a1.parent().parent().css('z-index', '15');
-            
-            a1.parent().removeClass('scalea');
+        a1.parent().unbind().bind("webkitTransitionEnd transitionend", function (e) {
+            b1.parent().parent().removeClass('below').addClass('above');
+            a1.parent().parent().removeClass('above').addClass('below');
+
             b2.parent().addClass('scaleb');
+            a1.parent().removeClass('scalea');
             a2.parent().removeClass('scaleb');
-            a1.children("span").text(loopthis.charAt(ctra));
-            b2.children("span").text(loopthis.charAt(ctra - 1));
-            c2.children("span").text(loopthis.charAt(ctra - 2));
+
+            b1.children("span").text(loopthis.charAt(ctra));
+            b2.children("span").text(loopthis.charAt(ctra));
+            a1.children("span").text(loopthis.charAt(ctra + 1));
+            c2.children("span").text(loopthis.charAt(ctra - 1));
+            ctra = ctra + 1;
             if (ctra !== tmpEnd + 1) {
                 b1.parent().addClass('scalea');
             } else {
                 b1.parent().removeClass('scalea');
-                b1.children("span").text(loopthis.charAt(ctra - 1));
+                loopcount = loopcount - 1;
+                console.log("min " + b + " " + loopcount);
             }
-            if (ctra > loopthis.length - 1) {
+            if (ctra > loopthis.length) {
                 ctra = 0;
             }
-            ctra++;
         });
-        
-        if (tmpStart !== tmpEnd + 1) {
-            b1.children("span").text(loopthis.charAt(ctra));
-            a1.parent().addClass('scalea');
-            ctra++;
-        }
 
-        // loopcount = loopcount + 1;
-        // a1.parent().addClass("scale");
-        // setTimeout(function () {
-            // a2.parent().addClass('scale2');
-        // }, duration);
-        // strloop[c] = setInterval(function () {
-            // a1.children("span").text(loopthis.charAt(tmpStart));
-            // a2.children("span").text(loopthis.charAt(tmpStart));
-            // setTimeout(function () {
-                // b1.children("span").text(loopthis.charAt(tmpStart));
-            // }, duration / 2);
-            // setTimeout(function () {
-                // b2.children("span").text(loopthis.charAt(tmpStart - 1));
-            // }, duration / 2);
-            // tmpStart = tmpStart + 1;
-            // if (tmpStart === tmpEnd + 1) {
-                // clearInterval(strloop[c]);
-                // strloop[c] = 0;
-                // a1.parent().removeClass("scale");
-                // a2.parent().removeClass('scale2');
-                // setTimeout(function () {
-                    // a2.parent().removeClass('scale2');
-                // }, duration);
-                // loopcount = loopcount - 1;
-                // if (loopcount === 0 && loop) {
-                    // playloop = setTimeout(function () {
-                        // ns.fwd();
-                    // }, psdelay);
-                // }
-            // }
-            // if (tmpStart > loopthis.length - 1) {
-                // tmpStart = 0;
-            // }
-        // }, duration);
+        if (a !== b) {
+            loopcount = loopcount + 1;
+            console.log("add " + b + " " + loopcount);
+            if (b1.parent().parent().hasClass('above')) {
+                b1.parent().addClass('scalea');
+                a1.children("span").text(loopthis.charAt(ctra));
+            } else {
+                a1.parent().addClass('scalea');
+                b1.children("span").text(loopthis.charAt(ctra));
+            }
+        }
     }
 
     function displayText(text, r, c) {
@@ -262,31 +238,30 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 
         for (j = 0; j < text.length; j = j + 1) {
             box = $("#display").find("#r_" + r).find("#c_" + c);
-            a = $.trim(box.find('div.text:first > span').text()).toUpperCase();
+            a = $.trim(box.find('.above div.text:first > span').text()).toUpperCase();
             b = text[j].toUpperCase();
 
             if ($.trim(b)) {
                 box.removeClass("page_" + prv).addClass("page_" + curr);
             }
             if (a === '') {
-                loopThrough(' ', b, box, r * cols + c);
+                loopThrough(' ', b, box);
             } else {
-                loopThrough(a, b, box, r * cols + c);
+                loopThrough(a, b, box);
             }
             c = c + 1;
         }
     }
 
     function clearPage(page) {
-        var boxid, box, d, s;
+        var box, d, s;
         $("div.page_" + page).each(function (a, b) {
             box = $(this);
             if ($.trim(box.find('div.text:first > span').text()) !== '') {
                 d = box.attr('id').split('_')[1];
                 s = box.parent().attr('id').split('_')[1];
-                boxid = parseInt(s, 10) * cols + parseInt(d, 10);
                 box.removeClass("page_" + page);
-                loopThrough(box.find('div.text:first > span').text(), ' ', box, boxid);
+                loopThrough($.trim(box.find('.above div.text:first > span').text()).toUpperCase(), ' ', box);
             }
         });
     }
@@ -313,7 +288,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     }
 
     function displayPage(text) {
-
+        console.log(loopcount);
         curr = (curr) ? 0 : 1;
         prv = (prv) ? 0 : 1;
         if (!text) {

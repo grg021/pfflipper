@@ -100,7 +100,8 @@ div.box {
 .dv > div { height:200%; }
 .spn.bottom { z-index:10 }
 .spn.top { z-index:20 }
-.dv.up {-webkit-transform-origin: 100% 100%; -moz-transform-origin: 100% 100%; }
+.above { z-index:30 !important; }
+.below { z-index:15 !important; }
 
 .dv {
     background-color: #555;
@@ -134,21 +135,29 @@ div.box {
 #nav { margin: 2px 0; position: relative;}
 #pfAppPanel { z-index:100 }
 .ibox { display: inline-block; }
+
 .scalea {
-    -webkit-transition: -webkit-transform 0.07s ease-in 0s;
-    -webkit-transform: scaley(0) skew(10deg, 0deg); 
-    -moz-transition: -moz-transform 0.08s linear 0s;
+    -webkit-transition: -webkit-transform 0.1s ease-in;
+    -webkit-transform: scaley(0) skew(10deg, 0deg);
+    -moz-transition: -moz-transform 0.1s ease-in;
     -moz-transform: scaley(0) skew(5deg, 0deg);
 }
-.scaleb { 
-    -webkit-transition: -webkit-transform 0.07s ease-out 0s;  
+
+.scaleb {
+    -webkit-transition: -webkit-transform 0.1s ease-out;
     -webkit-transform: scaley(1) skew(0deg, 0deg)  !important;
-    -moz-transition: -moz-transform 0.08s linear  0s;  
+    -moz-transition: -moz-transform 0.1s ease-out;
     -moz-transform: scaley(1) skew(0deg, 0deg)  !important;
 }
+
+.dv.up {
+    -webkit-transform-origin: 100% 100%;
+    -moz-transform-origin: 100% 100%;
+}
+
 .dv.sdown {
     -webkit-transform-origin: 0% 0%;
     -moz-transform-origin: 0% 0%;
     -webkit-transform: scaley(0) skew(-10deg, 0deg);
-    -moz-transform: scaley(0) skew(-5deg, 0deg); 
+    -moz-transform: scaley(0) skew(-5deg, 0deg);
 }
