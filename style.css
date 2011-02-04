@@ -135,13 +135,13 @@ div.box {
 #pfAppPanel { z-index:100 }
 .ibox { display: inline-block; }
 .scalea {
-    -webkit-transition: -webkit-transform 0.08s ease-in 0s;
-    -webkit-transform: scaley(0) skew(5deg, 0deg); 
+    -webkit-transition: -webkit-transform 01.08s ease-in 0s;
+    -webkit-transform: scaley(0) skew(10deg, 0deg); 
     -moz-transition: -moz-transform 0.08s linear 0s;
-    -moz-transform: scaley(0) skew(5deg, 0deg);
+    -moz-transform: scaley(0) skew(10deg, 0deg);
 }
 .scaleb { 
-    -webkit-transition: -webkit-transform 0.08s ease-out 0s;  
+    -webkit-transition: -webkit-transform 01.08s ease-out 0s;  
     -webkit-transform: scaley(1) skew(0deg, 0deg)  !important;
     -moz-transition: -moz-transform 0.08s linear  0s;  
     -moz-transform: scaley(1) skew(0deg, 0deg)  !important;
@@ -149,6 +149,6 @@ div.box {
 .dv.sdown {
     -webkit-transform-origin: 0% 0%;
     -moz-transform-origin: 0% 0%;
-    -webkit-transform: scaley(0) skew(-5deg, 0deg);
-    -moz-transform: scaley(0) skew(-5deg, 0deg); 
+    -webkit-transform: scaley(0) skew(-10deg, 0deg);
+    -moz-transform: scaley(0) skew(-10deg, 0deg); 
 }

@@ -113,14 +113,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         }
     }
 
-    function loopThrough(a, b, box, c) {
-        var tmpStart, tmpEnd, stype, etype, loopthis, a1, a2, b1, b2, c2;
-        a1 = box.find("span.top div.up div.text");
-        a2 = box.find("span.top div.down div.text");
-        b1 = box.find("span.bottom div.up div.text");
-        b2 = box.find("span.bottom div.down div.text");
-        c2 = box.find("span#3 div.down div.text");
-
+    function getIndex(a, b) {
+        var index = [];
         if (a !== ' ') {
             stype = letters;
             tmpStart = stype.indexOf(a);
@@ -145,7 +139,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
                 tmpEnd = chars.indexOf(b);
             }
             if (a === ' ') {
-                stype = etype;
+                stype = etype = ' ' + etype;
                 tmpStart = 0;
             }
         } else {
@@ -165,115 +159,96 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             tmpStart = tmpEnd = 0;
         }
 
-        if (strloop[c] !== 0 && strloop[c] !== undefined) {
-            clearInterval(strloop[c]);
-            strloop[c] = 0;
-            loopcount = loopcount - 1;
+        return {
+            'loopthis': loopthis,
+            'tmpStart': tmpStart,
+            'tmpEnd': tmpEnd
+        };
+    }
+    
+    function loopThrough(r, c, b) {
+        var tmpStart, tmpEnd, stype, etype, loopthis, a1, a2, b1, b2, c2, box;
+        box = $("#display").find("#r_" + r).find("#c_" + c);
+        a = $.trim(box.find('span.top div.up div.text > span').text()).toUpperCase();
+
+        if ($.trim(b)) {
+            box.removeClass("page_" + prv).addClass("page_" + curr);
         }
-        var ctra = tmpStart;
-        b1.parent().bind("webkitTransitionEnd transitionend", {}, function (e) {
+        if (a === '') {
+            a = ' ';
+        }
+        console.log(a + " " + b);
+        if ($.trim(a) !== $.trim(b)) {
+            a1 = box.find("span.top div.up div.text");
+            a2 = box.find("span.top div.down div.text");
+            b1 = box.find("span.bottom div.up div.text");
+            b2 = box.find("span.bottom div.down div.text");
+            c2 = box.find("span#3 div.down div.text");
+            index = getIndex(a, b);
+            loopthis = index.loopthis;
+            tmpStart = index.tmpStart;
+            tmpEnd = index.tmpEnd;
+            tmpStart++;
+            if (tmpStart > loopthis.length - 1) {
+                tmpStart = 0;
+            }
+            a1.children("span").text(loopthis.charAt(tmpStart));
+            b1.children("span").text(loopthis.charAt(tmpStart));
+            //a2.children("span").text(loopthis.charAt(tmpStart + 1));
+            //b2.children("span").text(loopthis.charAt(tmpStart + 1));
+            c2.children("span").text(loopthis.charAt(tmpStart));
+            
+        }
+    }
+    
+    function displayText(text, r, c) {
+        var a, b, j, box, x, xt;
+        tbox = $("div.box:first");
+        a1 = tbox.find("span.top div.up div.text");
+        a2 = tbox.find("span.top div.down div.text");
+        b1 = tbox.find("span.bottom div.up div.text");
+        b2 = tbox.find("span.bottom div.down div.text");
+        c2 = tbox.find("span#3 div.down div.text");
+        b1.parent().bind("webkitTransitionEnd transitionend", function() {
             a1.parent().parent().css('z-index', '30');
             b1.parent().parent().css('z-index', '15');
             
             b1.parent().removeClass('scalea');
             a2.parent().addClass('scaleb');
             b2.parent().removeClass('scaleb');
-            b1.children("span").text(loopthis.charAt(ctra));
-            a2.children("span").text(loopthis.charAt(ctra - 1));
-            c2.children("span").text(loopthis.charAt(ctra - 2));
-            if (ctra !== tmpEnd + 1) {
-                a1.parent().addClass('scalea');
-            } else {
-                a1.parent().removeClass('scalea');
-                a1.children("span").text(loopthis.charAt(ctra - 1));
+            a1.parent().addClass('scalea');
+            x = c;
+            xt = text;
+            for (j = 0; j < xt.length; j = j + 1) {
+                b = xt[j].toUpperCase();
+                loopThrough(r, x, b);
+                x = x + 1;
             }
-            if (ctra > loopthis.length - 1) {
-                ctra = 0;
-            }
-            ctra++;
-        });
 
-        a1.parent().bind("webkitTransitionEnd transitionend", {}, function (e) {
+        });
+        a1.parent().bind("webkitTransitionEnd transitionend", function() {
             b1.parent().parent().css('z-index', '30');
             a1.parent().parent().css('z-index', '15');
             
             a1.parent().removeClass('scalea');
             b2.parent().addClass('scaleb');
             a2.parent().removeClass('scaleb');
-            a1.children("span").text(loopthis.charAt(ctra));
-            b2.children("span").text(loopthis.charAt(ctra - 1));
-            c2.children("span").text(loopthis.charAt(ctra - 2));
-            if (ctra !== tmpEnd + 1) {
-                b1.parent().addClass('scalea');
-            } else {
-                b1.parent().removeClass('scalea');
-                b1.children("span").text(loopthis.charAt(ctra - 1));
+            b1.parent().addClass('scalea');
+            x = c;
+            xt = text;
+            for (j = 0; j < xt.length; j = j + 1) {
+                b = xt[j].toUpperCase();
+                loopThrough(r, x, b);
+                x = x + 1;
             }
-            if (ctra > loopthis.length - 1) {
-                ctra = 0;
-            }
-            ctra++;
         });
-        
-        if (tmpStart !== tmpEnd + 1) {
-            b1.children("span").text(loopthis.charAt(ctra));
+        x = c;
+        xt = text;
+        for (j = 0; j < xt.length; j = j + 1) {
+            b = xt[j].toUpperCase();
+            loopThrough(r, x, b);
             a1.parent().addClass('scalea');
-            ctra++;
-        }
-
-        // loopcount = loopcount + 1;
-        // a1.parent().addClass("scale");
-        // setTimeout(function () {
-            // a2.parent().addClass('scale2');
-        // }, duration);
-        // strloop[c] = setInterval(function () {
-            // a1.children("span").text(loopthis.charAt(tmpStart));
-            // a2.children("span").text(loopthis.charAt(tmpStart));
-            // setTimeout(function () {
-                // b1.children("span").text(loopthis.charAt(tmpStart));
-            // }, duration / 2);
-            // setTimeout(function () {
-                // b2.children("span").text(loopthis.charAt(tmpStart - 1));
-            // }, duration / 2);
-            // tmpStart = tmpStart + 1;
-            // if (tmpStart === tmpEnd + 1) {
-                // clearInterval(strloop[c]);
-                // strloop[c] = 0;
-                // a1.parent().removeClass("scale");
-                // a2.parent().removeClass('scale2');
-                // setTimeout(function () {
-                    // a2.parent().removeClass('scale2');
-                // }, duration);
-                // loopcount = loopcount - 1;
-                // if (loopcount === 0 && loop) {
-                    // playloop = setTimeout(function () {
-                        // ns.fwd();
-                    // }, psdelay);
-                // }
-            // }
-            // if (tmpStart > loopthis.length - 1) {
-                // tmpStart = 0;
-            // }
-        // }, duration);
-    }
-
-    function displayText(text, r, c) {
-        var a, b, j, box;
-
-        for (j = 0; j < text.length; j = j + 1) {
-            box = $("#display").find("#r_" + r).find("#c_" + c);
-            a = $.trim(box.find('div.text:first > span').text()).toUpperCase();
-            b = text[j].toUpperCase();
-
-            if ($.trim(b)) {
-                box.removeClass("page_" + prv).addClass("page_" + curr);
-            }
-            if (a === '') {
-                loopThrough(' ', b, box, r * cols + c);
-            } else {
-                loopThrough(a, b, box, r * cols + c);
-            }
-            c = c + 1;
+            x = x + 1;
         }
     }
 
