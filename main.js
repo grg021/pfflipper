@@ -157,7 +157,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             loopthis : loopthis
         };
     }
-    
+
     function loopThroughNoAnimation(a, b, box, c) {
         var tmpStart, tmpEnd, loopthis, a1, c2, index;
         a1 = box.find("span.top div.up div.text");
@@ -184,7 +184,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
                 loopcount = loopcount - 1;
                 if (loopcount === 0 && loop) {
                     playloop = setTimeout(function () {
-                        ns.fwd();
+                        ns.fwdPage();
                     }, psdelay);
                 }
             }
@@ -228,7 +228,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
                 boxflag[c] = false;
                 if (loopcount === 0 && loop) {
                     playloop = setTimeout(function () {
-                        ns.fwd();
+                        ns.fwdPage();
                     }, psdelay);
                 }
             }
@@ -258,7 +258,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
                 boxflag[c] = false;
                 if (loopcount === 0 && loop) {
                     playloop = setTimeout(function () {
-                        ns.fwd();
+                        ns.fwdPage();
                     }, psdelay);
                 }
             }
@@ -362,7 +362,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         clearPage(prv);
     }
 
-    function fwd() {
+    function fwdPage() {
         var text = $("#input").val(),
             arr = text.split(newpage).clean();
         if (!$.trim(text)) {
@@ -381,12 +381,12 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             $("#stop").show();
         });
         if (page === 0) {
-            fwd();
+            fwdPage();
         }
         loop = true;
         if (loopcount === 0 && loop) {
             playloop = setTimeout(function () {
-                fwd();
+                fwdPage();
             }, psdelay);
         }
     }
@@ -399,6 +399,13 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         loop = false;
     }
 
+    function fwd() {
+        if (loop) {
+            stop();
+        }
+        fwdPage();
+    }
+
     function rev() {
         var text = $("#input").val(),
             arr = text.split(newpage).clean();
@@ -406,7 +413,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             ns.resetAll();
             return;
         }
-        clearInterval(playloop);
+        ns.stop();
         page = (page) ? page - 1 : 1;
         page = (page < 1) ? arr.length : page;
         displayPage(arr[page - 1]);
@@ -444,6 +451,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         'stop' : stop,
         'rev' : rev,
         'fwd' : fwd,
+        'fwdPage' : fwdPage,
         'linkToDisplay' : linkToDisplay
     });
 
