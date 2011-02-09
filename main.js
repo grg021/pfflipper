@@ -191,7 +191,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             if (tmpStart > loopthis.length - 1) {
                 tmpStart = 0;
             }
-        }, 80);
+        }, 150);
     }
 
     function loopThrough(a, b, box, c) {
@@ -217,9 +217,12 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 
             a1.children("span").text(loopthis.charAt(tmpStart));
             a2.children("span").text(loopthis.charAt(tmpStart));
-            b1.children("span").text(loopthis.charAt(tmpStart + 1));
             c2.children("span").text(loopthis.charAt(tmpStart - 1));
             tmpStart = tmpStart + 1;
+            if (tmpStart > loopthis.length) {
+                tmpStart = 0;
+            }
+            b1.children("span").text(loopthis.charAt(tmpStart));
             if (tmpStart !== tmpEnd + 1) {
                 a1.parent().addClass('scalea');
             } else {
@@ -231,9 +234,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
                         ns.fwdPage();
                     }, psdelay);
                 }
-            }
-            if (tmpStart > loopthis.length) {
-                tmpStart = 0;
             }
         });
 
@@ -247,9 +247,12 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 
             b1.children("span").text(loopthis.charAt(tmpStart));
             b2.children("span").text(loopthis.charAt(tmpStart));
-            a1.children("span").text(loopthis.charAt(tmpStart + 1));
             c2.children("span").text(loopthis.charAt(tmpStart - 1));
             tmpStart = tmpStart + 1;
+            if (tmpStart > loopthis.length) {
+                tmpStart = 0;
+            }
+            a1.children("span").text(loopthis.charAt(tmpStart));
             if (tmpStart !== tmpEnd + 1) {
                 b1.parent().addClass('scalea');
             } else {
@@ -262,13 +265,16 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
                     }, psdelay);
                 }
             }
-            if (tmpStart > loopthis.length) {
-                tmpStart = 0;
-            }
         });
         if (a !== b) {
             loopcount = (boxflag[c] !== true) ? loopcount + 1 : loopcount;
             boxflag[c] = true;
+            if (loopthis.charAt(tmpStart) === a) {
+                tmpStart = tmpStart + 1;
+                if (tmpStart > loopthis.length) {
+                    tmpStart = 0;
+                }
+            }
             if (b1.parent().parent().hasClass('above')) {
                 b1.parent().addClass('scalea');
                 a1.children("span").text(loopthis.charAt(tmpStart));
@@ -398,7 +404,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         clearInterval(playloop);
         loop = false;
     }
-
+    
     function fwd() {
         if (loop) {
             stop();
