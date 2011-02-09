@@ -17,6 +17,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         curr = 0,
         prv = 1,
         loop = false,
+        strloop = [],
         newpage = /\n-{3,}\n/m;
 
     function buildBox(c, r) {
@@ -156,6 +157,42 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             loopthis : loopthis
         };
     }
+    
+    function loopThroughNoAnimation(a, b, box, c) {
+        var tmpStart, tmpEnd, loopthis, a1, c2, index;
+        a1 = box.find("span.top div.up div.text");
+        c2 = box.find("span#3 div.down div.text");
+
+        index = getIndex(a, b);
+        tmpStart = index.tmpStart;
+        tmpEnd = index.tmpEnd;
+        loopthis = index.loopthis;
+
+        if (strloop[c] !== 0 && strloop[c] !== undefined) {
+            clearInterval(strloop[c]);
+            strloop[c] = 0;
+            loopcount = loopcount - 1;
+        }
+        loopcount = loopcount + 1;
+        strloop[c] = setInterval(function () {
+            a1.children('span').text(loopthis.charAt(tmpStart));
+            c2.children('span').text(loopthis.charAt(tmpStart));
+            tmpStart = tmpStart + 1;
+            if (tmpStart === tmpEnd + 1) {
+                clearInterval(strloop[c]);
+                strloop[c] = 0;
+                loopcount = loopcount - 1;
+                if (loopcount === 0 && loop) {
+                    playloop = setTimeout(function () {
+                        ns.fwd();
+                    }, psdelay);
+                }
+            }
+            if (tmpStart > loopthis.length - 1) {
+                tmpStart = 0;
+            }
+        }, 80);
+    }
 
     function loopThrough(a, b, box, c) {
         var tmpStart, tmpEnd, loopthis, a1, a2, b1, b2, c2, index;
@@ -251,7 +288,11 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             b = text[j].toUpperCase();
             box.removeClass("page_" + prv).addClass("page_" + curr);
             a = (a === '') ? ' ' : a;
-            loopThrough(a, b, box, r * cols + c);
+            if (!Modernizr.csstransforms || !Modernizr.csstransitions) {
+                loopThroughNoAnimation(a, b, box, r * cols + c);
+            } else {
+                loopThrough(a, b, box, r * cols + c);
+            }
             c = c + 1;
         }
     }
@@ -265,7 +306,11 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             s = box.parent().attr('id').split('_')[1];
             boxid = parseInt(s, 10) * cols + parseInt(d, 10);
             box.removeClass("page_" + flag);
-            loopThrough(aa, ' ', box, boxid);
+            if (!Modernizr.csstransforms || !Modernizr.csstransitions) {
+                loopThroughNoAnimation(aa, ' ', box, boxid);
+            } else {
+                loopThrough(aa, ' ', box, boxid);
+            }
         });
     }
 
