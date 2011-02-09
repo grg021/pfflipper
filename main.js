@@ -404,7 +404,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         clearInterval(playloop);
         loop = false;
     }
-    
+
     function fwd() {
         if (loop) {
             stop();
