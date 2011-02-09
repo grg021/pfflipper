@@ -191,7 +191,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             if (tmpStart > loopthis.length - 1) {
                 tmpStart = 0;
             }
-        }, 150);
+        }, 250);
     }
 
     function loopThrough(a, b, box, c) {
