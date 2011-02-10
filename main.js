@@ -195,38 +195,46 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     }
 
     function loopThrough(a, b, box, c) {
-        var tmpStart, tmpEnd, loopthis, a1, a2, b1, b2, c2, index;
-        a1 = box.find("span.top div.up div.text");
-        a2 = box.find("span.top div.down div.text");
-        b1 = box.find("span.bottom div.up div.text");
-        b2 = box.find("span.bottom div.down div.text");
-        c2 = box.find("span#3 div.down div.text");
+        var tmpStart, tmpEnd, loopthis, a1, a2, b1, b2, c2, index,
+            a1p, a1pp, a2p, a2pp, b1p, b1pp, b2p, b2pp;
+        a1 = box.find("span.top div.up div.text span");
+        a2 = box.find("span.top div.down div.text span");
+        b1 = box.find("span.bottom div.up div.text span");
+        b2 = box.find("span.bottom div.down div.text span");
+        c2 = box.find("span#3 div.down div.text span");
+        a1p = a1.parent().parent();
+        a2p = a2.parent().parent();
+        b1p = b1.parent().parent();
+        b2p = b2.parent().parent();
+        a1pp = a1p.parent();
+        b1pp = b1p.parent();
+        a2pp = a2p.parent();
+        b2pp = b2p.parent();
 
         index = getIndex(a, b);
         tmpStart = index.tmpStart;
         tmpEnd = index.tmpEnd;
         loopthis = index.loopthis;
 
-        b1.parent().unbind().bind("webkitTransitionEnd transitionend", function (e) {
-            a1.parent().parent().removeClass('below').addClass('above');
-            b1.parent().parent().removeClass('above').addClass('below');
+        b1p.unbind().bind("webkitTransitionEnd transitionend", function (e) {
+            b1pp.removeClass('above').addClass('below');
+            a1pp.addClass('above').removeClass('below');
 
-            a2.parent().addClass('scaleb');
-            b1.parent().removeClass('scalea');
-            b2.parent().removeClass('scaleb');
+            a1p.addClass('scalea');
+            b1p.removeClass('scalea');
+            a2p.addClass('scaleb');
+            b2p.removeClass('scaleb');
 
-            a1.children("span").text(loopthis.charAt(tmpStart));
-            a2.children("span").text(loopthis.charAt(tmpStart));
-            c2.children("span").text(loopthis.charAt(tmpStart - 1));
+            a1.text(loopthis.charAt(tmpStart));
+            a2.text(loopthis.charAt(tmpStart));
+            c2.text(loopthis.charAt(tmpStart - 1));
             tmpStart = tmpStart + 1;
             if (tmpStart > loopthis.length) {
                 tmpStart = 0;
             }
-            b1.children("span").text(loopthis.charAt(tmpStart));
-            if (tmpStart !== tmpEnd + 1) {
-                a1.parent().addClass('scalea');
-            } else {
-                a1.parent().removeClass('scalea');
+            b1.text(loopthis.charAt(tmpStart));
+            if (tmpStart === tmpEnd + 1) {
+                a1p.removeClass('scalea');
                 loopcount = loopcount - 1;
                 boxflag[c] = false;
                 if (loopcount === 0 && loop) {
@@ -237,26 +245,25 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             }
         });
 
-        a1.parent().unbind().bind("webkitTransitionEnd transitionend", function (e) {
-            b1.parent().parent().removeClass('below').addClass('above');
-            a1.parent().parent().removeClass('above').addClass('below');
+        a1p.unbind().bind("webkitTransitionEnd transitionend", function (e) {
+            a1pp.removeClass('above').addClass('below');
+            b1pp.addClass('above').removeClass('below');
 
-            b2.parent().addClass('scaleb');
-            a1.parent().removeClass('scalea');
-            a2.parent().removeClass('scaleb');
+            b1p.addClass('scalea');
+            a1p.removeClass('scalea');
+            b2p.addClass('scaleb');
+            a2p.removeClass('scaleb');
 
-            b1.children("span").text(loopthis.charAt(tmpStart));
-            b2.children("span").text(loopthis.charAt(tmpStart));
-            c2.children("span").text(loopthis.charAt(tmpStart - 1));
+            b1.text(loopthis.charAt(tmpStart));
+            b2.text(loopthis.charAt(tmpStart));
+            c2.text(loopthis.charAt(tmpStart - 1));
             tmpStart = tmpStart + 1;
             if (tmpStart > loopthis.length) {
                 tmpStart = 0;
             }
-            a1.children("span").text(loopthis.charAt(tmpStart));
-            if (tmpStart !== tmpEnd + 1) {
-                b1.parent().addClass('scalea');
-            } else {
-                b1.parent().removeClass('scalea');
+            a1.text(loopthis.charAt(tmpStart));
+            if (tmpStart === tmpEnd + 1) {
+                b1p.removeClass('scalea');
                 loopcount = loopcount - 1;
                 boxflag[c] = false;
                 if (loopcount === 0 && loop) {
@@ -275,12 +282,12 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
                     tmpStart = 0;
                 }
             }
-            if (b1.parent().parent().hasClass('above')) {
-                b1.parent().addClass('scalea');
-                a1.children("span").text(loopthis.charAt(tmpStart));
+            if (b1pp.hasClass('above')) {
+                b1p.addClass('scalea');
+                a1.text(loopthis.charAt(tmpStart));
             } else {
-                a1.parent().addClass('scalea');
-                b1.children("span").text(loopthis.charAt(tmpStart));
+                a1p.addClass('scalea');
+                b1.text(loopthis.charAt(tmpStart));
             }
         }
     }

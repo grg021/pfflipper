@@ -65,14 +65,14 @@ div.box {
 .dv > div > span { width:100%; vertical-align:middle }
 .down > div { position:relative; top:-100%; }
 .box span { display:inline-block }
-.spn.bottom > .dv { z-index:5 }
+.spn.bottom > .dv { z-index:15 }
 .spn.top > .dv { z-index:15 }
 .spn { position:absolute; }
 .dv > div { height:200%; }
 .spn.bottom { z-index:10 }
 .spn.top { z-index:20 }
-.above { z-index:30 !important; }
-.below { z-index:15 !important; }
+.above { z-index:20 !important; }
+.below { z-index:10 !important; }
 
 .dv {
     background-color: #555;
@@ -108,16 +108,16 @@ div.box {
 .ibox { display: inline-block; }
 
 .scalea {
-    -webkit-transition: -webkit-transform 0.5s ease-in 0s;
-    -webkit-transform: rotate3d(1,0,0,90deg) skew(10deg, 0deg);
-    -moz-transition: -moz-transform 0.5s ease-in;
+    -webkit-transition: -webkit-transform 0.5s linear 0s;
+    -webkit-transform: rotate3d(1,0,0,90deg) skew(5deg, 0deg);
+    -moz-transition: -moz-transform 0.5s linear;
     -moz-transform: scaley(0) skew(5deg, 0deg);
 }
 
 .scaleb {
-    -webkit-transition: -webkit-transform 0.5s ease-out 0s;
+    -webkit-transition: -webkit-transform 0.5s linear 0s;
     -webkit-transform: rotate3d(1,0,0,0deg) skew(0deg, 0deg)  !important;
-    -moz-transition: -moz-transform 0.5s ease-out;
+    -moz-transition: -moz-transform 0.5s linear;
     -moz-transform: scaley(1) skew(0deg, 0deg)  !important;
 }
 
@@ -129,6 +129,6 @@ div.box {
 .dv.sdown {
     -webkit-transform-origin: 0% 0%;
     -moz-transform-origin: 0% 0%;
-    -webkit-transform: rotate3d(1,0,0,90deg) skew(-10deg, 0deg);
-    -moz-transform: scaley(0) skew(-10deg, 0deg);
+    -webkit-transform: rotate3d(1,0,0,90deg) skew(-5deg, 0deg);
+    -moz-transform: scaley(0) skew(-5deg, 0deg);
 }
