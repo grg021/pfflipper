@@ -108,27 +108,40 @@ div.box {
 .ibox { display: inline-block; }
 
 .scalea {
-    -webkit-transition: -webkit-transform 0.5s linear 0s;
+    -webkit-transition: -webkit-transform 0.15s ease-in 0.25s;
     -webkit-transform: rotate3d(1,0,0,90deg) skew(5deg, 0deg);
-    -moz-transition: -moz-transform 0.5s linear;
+    -moz-transition: -moz-transform 0.15s ease-in 0.25s;
     -moz-transform: scaley(0) skew(5deg, 0deg);
+    transition: -webkit-transform 0.15s ease-in 0.25s;
+    transform: rotate3d(1,0,0,90deg) skew(5deg, 0deg);
 }
 
 .scaleb {
-    -webkit-transition: -webkit-transform 0.5s linear 0s;
-    -webkit-transform: rotate3d(1,0,0,0deg) skew(0deg, 0deg)  !important;
-    -moz-transition: -moz-transform 0.5s linear;
-    -moz-transform: scaley(1) skew(0deg, 0deg)  !important;
+    -webkit-transition: -webkit-transform 0.15s ease-out 0s;
+    -webkit-transform: rotate3d(1,0,0,0deg) skew(0deg, 0deg) !important;
+    -moz-transition: -moz-transform 0.15s ease-out;
+    -moz-transform: scaley(1) skew(0deg, 0deg) !important;
+    transition: -webkit-transform 0.15s ease-out 0s;
+    transform: rotate3d(1,0,0,0deg) skew(0deg, 0deg) !important;
 }
 
 .dv.up {
     -webkit-transform-origin: 100% 100%;
     -moz-transform-origin: 100% 100%;
+    transform-origin: 100% 100%;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#555));
+    background: -moz-linear-gradient(100% 100% 90deg, #555, #333);
 }
 
 .dv.sdown {
     -webkit-transform-origin: 0% 0%;
     -moz-transform-origin: 0% 0%;
+    transform-origin: 0% 0%;
     -webkit-transform: rotate3d(1,0,0,90deg) skew(-5deg, 0deg);
     -moz-transform: scaley(0) skew(-5deg, 0deg);
+    transform: scaley(0) skew(-5deg, 0deg);
+}
+.dv.down {
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#555), to(#444));
+    background: -moz-linear-gradient(100% 100% 90deg, #444, #555);
 }

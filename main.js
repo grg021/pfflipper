@@ -196,20 +196,18 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 
     function loopThrough(a, b, box, c) {
         var tmpStart, tmpEnd, loopthis, a1, a2, b1, b2, c2, index,
-            a1p, a1pp, a2p, a2pp, b1p, b1pp, b2p, b2pp;
-        a1 = box.find("span.top div.up div.text span");
-        a2 = box.find("span.top div.down div.text span");
-        b1 = box.find("span.bottom div.up div.text span");
-        b2 = box.find("span.bottom div.down div.text span");
+            a1p, a1pp, a2p, b1p, b1pp, b2p;
+        a1pp = box.children("#1");
+        b1pp = box.children("#2");
+        a1p = a1pp.children(".up");
+        a2p = a1pp.children(".down");
+        b1p = b1pp.children(".up");
+        b2p = b1pp.children(".down");
+        a1 = a1p.find("div.text span");
+        a2 = a2p.find("div.text span");
+        b1 = b1p.find("div.text span");
+        b2 = b2p.find("div.text span");
         c2 = box.find("span#3 div.down div.text span");
-        a1p = a1.parent().parent();
-        a2p = a2.parent().parent();
-        b1p = b1.parent().parent();
-        b2p = b2.parent().parent();
-        a1pp = a1p.parent();
-        b1pp = b1p.parent();
-        a2pp = a2p.parent();
-        b2pp = b2p.parent();
 
         index = getIndex(a, b);
         tmpStart = index.tmpStart;
@@ -220,10 +218,10 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             b1pp.removeClass('above').addClass('below');
             a1pp.addClass('above').removeClass('below');
 
-            a1p.addClass('scalea');
-            b1p.removeClass('scalea');
             a2p.addClass('scaleb');
             b2p.removeClass('scaleb');
+            a1p.addClass('scalea');
+            b1p.removeClass('scalea');
 
             a1.text(loopthis.charAt(tmpStart));
             a2.text(loopthis.charAt(tmpStart));
@@ -249,10 +247,10 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             a1pp.removeClass('above').addClass('below');
             b1pp.addClass('above').removeClass('below');
 
-            b1p.addClass('scalea');
-            a1p.removeClass('scalea');
             b2p.addClass('scaleb');
             a2p.removeClass('scaleb');
+            b1p.addClass('scalea');
+            a1p.removeClass('scalea');
 
             b1.text(loopthis.charAt(tmpStart));
             b2.text(loopthis.charAt(tmpStart));
