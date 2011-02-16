@@ -7,7 +7,6 @@ body {
 }
 
 img { border: 0; }
-div { padding: 0; margin: 0; }
 #warning, #pageof { display: none;  }
 #pageof { position: absolute; top: 10px; right: 0px; }
 .rt { text-align: right; }
@@ -38,49 +37,11 @@ textarea {
     font-size: 15px;
 }
 
-div.box {
-    display: inline-block;
-    text-transform: uppercase;
-    margin: 3px 2px;
-    font-weight: bold;
-    -moz-box-shadow: 2px 4px 3px #888;
-    -webkit-box-shadow: 2px 4px 3px #888;
-    box-shadow: 2px 4px 3px #888;
-}
-
 #display {
     background-color: #333;
     border-color: #333;
     border-style: solid;
-    border-width: 2px 5px 4px 2px;
-}
-
-.rdiv {
-    margin:0;
-    padding:0;
-    text-align: center;
-    vertical-align: middle;
-}
-
-.dv > div > span { width:100%; vertical-align:middle }
-.down > div { position:relative; top:-100%; }
-.box span { display:inline-block }
-.spn.bottom > .dv { z-index:15 }
-.spn.top > .dv { z-index:15 }
-.spn { position:absolute; }
-.dv > div { height:200%; }
-.spn.bottom { z-index:10 }
-.spn.top { z-index:20 }
-.above { z-index:20 !important; }
-.below { z-index:10 !important; }
-
-.dv {
-    background-color: #555;
-    color: #FFF;
-    border:1px solid #333;
-    display:block;
-    overflow:hidden;
-    text-align: center;
+    border-width: 2px 4px 2px 2px;
 }
 
 #nav a {
@@ -102,46 +63,65 @@ div.box {
 #stop { background-position: 132px -3px; }
 #rev { background-position: 501px -36px; }
 #fwd { background-position: 468px -36px; }
-
 #nav { margin: 2px 0; position: relative;}
 #pfAppPanel { z-index:100 }
-.ibox { display: inline-block; }
 
-.scalea {
-    -webkit-transition: -webkit-transform 0.15s ease-in 0.25s;
-    -webkit-transform: rotate3d(1,0,0,90deg) skew(5deg, 0deg);
-    -moz-transition: -moz-transform 0.15s ease-in 0.25s;
-    -moz-transform: scaley(0) skew(5deg, 0deg);
-    transition: -webkit-transform 0.15s ease-in 0.25s;
-    transform: rotate3d(1,0,0,90deg) skew(5deg, 0deg);
+div.ibox { display: inline-block; }
+div.down > div { position: relative; top: -100%; }
+div.spn { position: absolute; top: 0; left: 0; }
+div.text { height: 200%; }
+div.text span { vertical-align: middle; }
+div.top { z-index: 5; }
+div.bottom { z-index: 1; }
+
+div.box {
+    display: inline-block;
+    margin: 3px 2px;
+    font-weight: bold;
+    position:relative;
 }
 
-.scaleb {
-    -webkit-transition: -webkit-transform 0.15s ease-out 0s;
+div.dv {
+    color: #FFF;
+    overflow:hidden;
+    border-style: solid;
+    border-color:#222;
+    background-color: #555;
+}
+
+div.scalea {
+    -webkit-transition: -webkit-transform 0.25s ease-in 0s;
+    -webkit-transform: rotate3d(1,0,0,90deg) skew(7deg, 0deg);
+    -moz-transition: -moz-transform 0.25s ease-in 0s;
+    -moz-transform: scaley(0) skew(7deg, 0deg);
+}
+
+div.scaleb {
+    -webkit-transition: -webkit-transform 0.25s ease-out 0s;
     -webkit-transform: rotate3d(1,0,0,0deg) skew(0deg, 0deg) !important;
-    -moz-transition: -moz-transform 0.15s ease-out;
+    -moz-transition: -moz-transform 0.25s ease-out;
     -moz-transform: scaley(1) skew(0deg, 0deg) !important;
-    transition: -webkit-transform 0.15s ease-out 0s;
-    transform: rotate3d(1,0,0,0deg) skew(0deg, 0deg) !important;
 }
 
-.dv.up {
+div.sa {
+    -webkit-transition: color 0.25s ease-in 0s;
+    -moz-transition: color 0.25s ease-in 0s;
+    color:#333;
+}
+
+div.up {
     -webkit-transform-origin: 100% 100%;
     -moz-transform-origin: 100% 100%;
-    transform-origin: 100% 100%;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#555));
     background: -moz-linear-gradient(100% 100% 90deg, #555, #333);
+    border-width: 1px;
 }
 
-.dv.sdown {
+div.down { border-width: 0 1px 1px 1px;  }
+
+div.sdown {
     -webkit-transform-origin: 0% 0%;
     -moz-transform-origin: 0% 0%;
-    transform-origin: 0% 0%;
-    -webkit-transform: rotate3d(1,0,0,90deg) skew(-5deg, 0deg);
-    -moz-transform: scaley(0) skew(-5deg, 0deg);
-    transform: scaley(0) skew(-5deg, 0deg);
-}
-.dv.down {
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#555), to(#444));
-    background: -moz-linear-gradient(100% 100% 90deg, #444, #555);
+    -webkit-transform: rotate3d(1,0,0,90deg) skew(-7deg, 0deg);
+    -moz-transform: scaley(0) skew(-7deg, 0deg);
 }

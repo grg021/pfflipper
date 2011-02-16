@@ -8,7 +8,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         wwidth,
         boxW,
         boxH,
-        boxflag = [],
         psdelay = 5000,
         loopcount = 0,
         cols = 21,
@@ -22,13 +21,12 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 
     function buildBox(c, r) {
         var i, j,
-            $cboxa = $("<span id='1' class='spn top above'></span>"),
-            $cboxb = $("<span id='2' class='spn bottom below'></span>"),
-            $cboxc = $("<span id='3' class='spn'></span>"),
+            $cboxa = $("<div id='1' class='spn top'></div >"),
+            $cboxc = $("<div id='3' class='spn bottom'></div >"),
             $box = $("<div/>", { "class": "box" })
-                .height(boxH)
-                .width(boxW)
-                .append($cboxa.clone(), $cboxb.clone(), $cboxc.clone()),
+            .height(boxH)
+            .width(boxW)
+            .append($cboxa.clone(), $cboxc.clone()),
             $rdiv = $("<div/>", { "class": "rdiv" });
         for (j = 0; j < c; j = j + 1) {
             $rdiv.append($box.clone().attr('id', "c_" + j));
@@ -41,7 +39,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     function onReady() {
         $.fn.textfill = function (options) {
             var fontSize = options.maxFontPixels,
-                ourText = $('span', this),
+                ourText = $('div', this),
                 maxHeight = $(this).height(),
                 maxWidth = $(this).width(),
                 textHeight,
@@ -54,6 +52,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             } while (textHeight > maxHeight || (textWidth > maxWidth && fontSize > 3));
             return this;
         };
+
         Array.prototype.clean = function () {
             while ($.trim(this[this.length - 1]) === '' && this.length) {
                 this.splice(this.length - 1, 1);
@@ -69,14 +68,15 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         wwidth = (wwidth) ? wwidth : $(window).width();
         boxW = Math.floor((wwidth - 20) / cols - 4);
         boxH = boxW * 1.25;
+        buildBox(cols, rows);
         $('#input').focus();
         ns.client = new clientLib.Client(ns);
         if (document.getElementById('title')) {
             ns.client.addAppBar();
         }
-        buildBox(cols, rows);
 
-        var $cboxa = $("<div class='dv up'><div class='text'><span></span></div></div>" +
+        var $da = $('#da'), $db = $('#db'),
+            $cboxa = $("<div class='dv up'><div class='text'><span></span></div></div>" +
                        "<div class='dv down sdown'><div class='text'><span></span></div></div>")
             .height(boxH / 2)
             .width(boxW)
@@ -88,10 +88,10 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             .css("line-height", (boxH - 4) + "px");
 
         // resize font based on bounding box size
-        $("div.box > span").text('W');
+        $("div.box > div").text('W');
         $("div.box").textfill({ maxFontPixels: 72 });
-        $("div.box > span").html($cboxb.clone());
-        $("div.box > span:not(#3)").html($cboxa.clone());
+        $("div.box > div").html($cboxb.clone());
+        $("div.box > div:not(#3)").html($cboxa.clone());
 
         // resize textarea and title width
         $('#display, #input, #title, #nav, #form').width($("#display").width());
@@ -104,6 +104,70 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
                 ns.play();
             }
         }
+
+        $db.unbind().bind("webkitTransitionEnd transitionend", function () {
+            var $tmp = $('div.tmp');
+
+            $tmp.each(function (a, b) {
+                var loopthis = $.data(b, 'data').loop,
+                    ctr = $.data(b, 'data').start;
+                $(this).find("div#3 > div.down > div.text > span").text(loopthis.charAt(ctr));
+            });
+
+            $('div.animate > div#1 > div.down').removeClass('scaleb');
+            $tmp.removeClass('tmp animate');
+            $db.removeClass('sa');
+
+            if (!$('div.loop').length) {
+                if (loop) {
+                    playloop = setTimeout(function () {
+                        ns.fwdPage();
+                    }, psdelay);
+                }
+                return;
+            }
+
+            $('div.animate').each(function (a, b) {
+                var $that = $(this),
+                    loopthis = $.data(b, 'data').loop,
+                    ctr = $.data(b, 'data').start,
+                    $d3 = $that.children('div#3');
+                $d3.find("div.up > div.text > span").text(loopthis.charAt(ctr));
+                $d3.find("div.down > div.text > span").text(loopthis.charAt(ctr - 1));
+            });
+
+            $da.addClass('sa');
+            $('div.skip').removeClass('skip');
+            $('div.loop > div#1 > div.up').addClass('scalea');
+        });
+
+        $da.unbind().bind("webkitTransitionEnd transitionend", function () {
+            $da.removeClass('sa');
+            if (!$('div.loop').length) {
+                return;
+            }
+            $('div.loop:not(.skip)').addClass('animate').each(function (a, b) {
+                var $that = $(this),
+                    loopthis = $.data(b, 'data').loop,
+                    ctr = $.data(b, 'data').start,
+                    $above = $that.children('div#1');
+                $above.find("div.up > div.text > span, div.down > div.text > span").text(loopthis.charAt(ctr));
+                if (ctr === $.data(b, 'data').end) {
+                    $that.removeClass('loop').addClass('tmp');
+                } else {
+                    ctr = ctr + 1;
+                    if (ctr > loopthis.length) {
+                        ctr = 0;
+                    }
+                    $.data(b, 'data').start = ctr;
+                }
+            });
+            $('div.skip').removeClass('skip');
+            $('div.animate > div#1 > div.down').addClass('scaleb');
+            $('div.box > div#1 > div.up').removeClass('scalea');
+            $db.addClass('sa');
+        });
+
     }
 
     function getIndex(a, b) {
@@ -160,8 +224,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
 
     function loopThroughNoAnimation(a, b, box, c) {
         var tmpStart, tmpEnd, loopthis, a1, c2, index;
-        a1 = box.find("span.top div.up div.text");
-        c2 = box.find("span#3 div.down div.text");
+        a1 = box.find("div#1 > div.up > div.text > span");
+        c2 = box.find("div#3 > div.down > div.text > span");
 
         index = getIndex(a, b);
         tmpStart = index.tmpStart;
@@ -175,8 +239,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         }
         loopcount = loopcount + 1;
         strloop[c] = setInterval(function () {
-            a1.children('span').text(loopthis.charAt(tmpStart));
-            c2.children('span').text(loopthis.charAt(tmpStart));
+            a1.text(loopthis.charAt(tmpStart));
+            c2.text(loopthis.charAt(tmpStart));
             tmpStart = tmpStart + 1;
             if (tmpStart === tmpEnd + 1) {
                 clearInterval(strloop[c]);
@@ -191,138 +255,78 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             if (tmpStart > loopthis.length - 1) {
                 tmpStart = 0;
             }
-        }, 250);
-    }
-
-    function loopThrough(a, b, box, c) {
-        var tmpStart, tmpEnd, loopthis, a1, a2, b1, b2, c2, index,
-            a1p, a1pp, a2p, b1p, b1pp, b2p;
-        a1pp = box.children("#1");
-        b1pp = box.children("#2");
-        a1p = a1pp.children(".up");
-        a2p = a1pp.children(".down");
-        b1p = b1pp.children(".up");
-        b2p = b1pp.children(".down");
-        a1 = a1p.find("div.text span");
-        a2 = a2p.find("div.text span");
-        b1 = b1p.find("div.text span");
-        b2 = b2p.find("div.text span");
-        c2 = box.find("span#3 div.down div.text span");
-
-        index = getIndex(a, b);
-        tmpStart = index.tmpStart;
-        tmpEnd = index.tmpEnd;
-        loopthis = index.loopthis;
-
-        b1p.unbind().bind("webkitTransitionEnd transitionend", function (e) {
-            b1pp.removeClass('above').addClass('below');
-            a1pp.addClass('above').removeClass('below');
-
-            a2p.addClass('scaleb');
-            b2p.removeClass('scaleb');
-            a1p.addClass('scalea');
-            b1p.removeClass('scalea');
-
-            a1.text(loopthis.charAt(tmpStart));
-            a2.text(loopthis.charAt(tmpStart));
-            c2.text(loopthis.charAt(tmpStart - 1));
-            tmpStart = tmpStart + 1;
-            if (tmpStart > loopthis.length) {
-                tmpStart = 0;
-            }
-            b1.text(loopthis.charAt(tmpStart));
-            if (tmpStart === tmpEnd + 1) {
-                a1p.removeClass('scalea');
-                loopcount = loopcount - 1;
-                boxflag[c] = false;
-                if (loopcount === 0 && loop) {
-                    playloop = setTimeout(function () {
-                        ns.fwdPage();
-                    }, psdelay);
-                }
-            }
-        });
-
-        a1p.unbind().bind("webkitTransitionEnd transitionend", function (e) {
-            a1pp.removeClass('above').addClass('below');
-            b1pp.addClass('above').removeClass('below');
-
-            b2p.addClass('scaleb');
-            a2p.removeClass('scaleb');
-            b1p.addClass('scalea');
-            a1p.removeClass('scalea');
-
-            b1.text(loopthis.charAt(tmpStart));
-            b2.text(loopthis.charAt(tmpStart));
-            c2.text(loopthis.charAt(tmpStart - 1));
-            tmpStart = tmpStart + 1;
-            if (tmpStart > loopthis.length) {
-                tmpStart = 0;
-            }
-            a1.text(loopthis.charAt(tmpStart));
-            if (tmpStart === tmpEnd + 1) {
-                b1p.removeClass('scalea');
-                loopcount = loopcount - 1;
-                boxflag[c] = false;
-                if (loopcount === 0 && loop) {
-                    playloop = setTimeout(function () {
-                        ns.fwdPage();
-                    }, psdelay);
-                }
-            }
-        });
-        if (a !== b) {
-            loopcount = (boxflag[c] !== true) ? loopcount + 1 : loopcount;
-            boxflag[c] = true;
-            if (loopthis.charAt(tmpStart) === a) {
-                tmpStart = tmpStart + 1;
-                if (tmpStart > loopthis.length) {
-                    tmpStart = 0;
-                }
-            }
-            if (b1pp.hasClass('above')) {
-                b1p.addClass('scalea');
-                a1.text(loopthis.charAt(tmpStart));
-            } else {
-                a1p.addClass('scalea');
-                b1.text(loopthis.charAt(tmpStart));
-            }
-        }
+        }, 500);
     }
 
     function displayText(text, r, c) {
-        var a, b, j, box;
+        var a, b, j, $box, index, tmpStart, tmpEnd, loopthis, len;
 
-        for (j = 0; j < text.length; j = j + 1) {
-            box = $("#display").find("#r_" + r).find("#c_" + c);
-            a = $.trim(box.find('.above div.text:first > span').text()).toUpperCase();
+        for (j = 0, len = text.length; j < len; j = j + 1) {
+            $box = $("#display").children("#r_" + r).children("#c_" + c);
+            a = $.trim($box.find('div#1 > div.up > div.text > span').text()).toUpperCase();
             b = text[j].toUpperCase();
-            box.removeClass("page_" + prv).addClass("page_" + curr);
             a = (a === '') ? ' ' : a;
-            if (!Modernizr.csstransforms || !Modernizr.csstransitions) {
-                loopThroughNoAnimation(a, b, box, r * cols + c);
-            } else {
-                loopThrough(a, b, box, r * cols + c);
+
+            if ($.trim(b) !== '') {
+                $box.removeClass("page_" + prv).addClass("page_" + curr);
+                if (a !== b) {
+                    if (!Modernizr.csstransforms || !Modernizr.csstransitions) {
+                        loopThroughNoAnimation(a, b, $box, r * cols + c);
+                    } else {
+                        $box.addClass('loop');
+                        index = getIndex(a, b);
+                        tmpStart = index.tmpStart;
+                        tmpEnd = index.tmpEnd;
+                        loopthis = index.loopthis;
+                        $box.data('data', { 'start': tmpStart, 'end': tmpEnd, 'loop': loopthis });
+                    }
+                }
             }
             c = c + 1;
         }
     }
 
     function clearPage(flag) {
-        var box, aa, d, s, boxid;
-        $("div.page_" + flag).each(function (a, b) {
-            box = $(this);
-            aa = $.trim(box.find('.above div.text:first > span').text());
-            d = box.attr('id').split('_')[1];
-            s = box.parent().attr('id').split('_')[1];
-            boxid = parseInt(s, 10) * cols + parseInt(d, 10);
-            box.removeClass("page_" + flag);
-            if (!Modernizr.csstransforms || !Modernizr.csstransitions) {
-                loopThroughNoAnimation(aa, ' ', box, boxid);
+        var $box, a, tmpStart, tmpEnd, index, loopthis, s, d,
+            bool = $('div#da, div#db').hasClass('sa'),
+            support = !Modernizr.csstransforms || !Modernizr.csstransitions;
+
+        $("div.page_" + flag).each(function () {
+            $box = $(this);
+            a = $.trim($box.find('div#1 > div.up > div.text > span').text()).toUpperCase();
+            $box.removeClass("page_" + flag);
+            if (support) {
+                d = $box.attr('id').split('_')[1];
+                s = $box.parent().attr('id').split('_')[1];
+                loopThroughNoAnimation(a, ' ', $box, parseInt(s, 10) * cols + parseInt(d, 10));
             } else {
-                loopThrough(aa, ' ', box, boxid);
+                $box.addClass('loop');
+                index = getIndex(a, ' ');
+                tmpStart = index.tmpStart;
+                tmpEnd = index.tmpEnd;
+                loopthis = index.loopthis;
+                $box.data('data', { 'start': tmpStart, 'end': tmpEnd, 'loop': loopthis });
             }
         });
+
+        $('div.loop').each(function (a, b) {
+            var $that = $(this),
+                loopthis = $.data(b, 'data').loop,
+                ctr = $.data(b, 'data').start;
+            if ($.trim($that.find("div#1 > div.up > div.text > span").text())) {
+                ctr = ctr + 1;
+                if (ctr > loopthis.length) {
+                    ctr = 0;
+                }
+            }
+            $that.find('div#3 > div.up > div.text > span').text(loopthis.charAt(ctr));
+            $.data(b, 'data').start = ctr;
+        });
+        $('div.loop.skip').removeClass('skip');
+        $('div.loop:not(.animate)').addClass('skip');
+        if (!bool) {
+            $('div#da').addClass('sa');
+        }
     }
 
     function clipText(text) {
@@ -388,14 +392,13 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     }
 
     function play() {
-        $("#play").hide(1, function () {
-            $("#stop").show();
-        });
+        $('#stop').show();
+        $('#play').hide();
         if (page === 0) {
             fwdPage();
         }
         loop = true;
-        if (loopcount === 0 && loop) {
+        if ($('div.loop').length === 0 && loopcount === 0 && loop) {
             playloop = setTimeout(function () {
                 fwdPage();
             }, psdelay);
@@ -403,9 +406,8 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     }
 
     function stop() {
-        $("#stop").hide(1, function () {
-            $("#play").show();
-        });
+        $('#stop').hide();
+        $('#play').show();
         clearInterval(playloop);
         loop = false;
     }
