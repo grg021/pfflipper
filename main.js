@@ -274,14 +274,14 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
                         loopThroughNoAnimation(a, b, $box, r * cols + c);
                     } else {
                         $box.addClass('loop');
-                        index = getIndex(a, b);
-                        tmpStart = index.tmpStart;
-                        tmpEnd = index.tmpEnd;
-                        loopthis = index.loopthis;
-                        $box.data('data', { 'start': tmpStart, 'end': tmpEnd, 'loop': loopthis });
                     }
                 }
             }
+            index = getIndex(a, b);
+            tmpStart = index.tmpStart;
+            tmpEnd = index.tmpEnd;
+            loopthis = index.loopthis;
+            $box.data('data', { 'start': tmpStart, 'end': tmpEnd, 'loop': loopthis });
             c = c + 1;
         }
     }
