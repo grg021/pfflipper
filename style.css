@@ -38,8 +38,8 @@ textarea {
 }
 
 #display {
-    background-color: #333;
-    border-color: #333;
+    background-color: #555;
+    border-color: #555;
     border-style: solid;
     border-width: 2px 4px 2px 2px;
 }
@@ -79,6 +79,7 @@ div.box {
     margin: 3px 2px;
     font-weight: bold;
     position:relative;
+    -webkit-box-shadow: #222 3px 5px 1px;
 }
 
 div.dv {
@@ -91,9 +92,9 @@ div.dv {
 
 div.scalea {
     -webkit-transition: -webkit-transform 0.25s ease-in 0s;
-    -webkit-transform: rotate3d(1,0,0,90deg) skew(7deg, 0deg);
+    -webkit-transform: rotate3d(1,0,0,90deg) skew(8deg, 0deg);
     -moz-transition: -moz-transform 0.25s ease-in 0s;
-    -moz-transform: scaley(0) skew(7deg, 0deg);
+    -moz-transform: scaley(0) skew(8deg, 0deg);
 }
 
 div.scaleb {
@@ -112,16 +113,18 @@ div.sa {
 div.up {
     -webkit-transform-origin: 100% 100%;
     -moz-transform-origin: 100% 100%;
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#555));
-    background: -moz-linear-gradient(100% 100% 90deg, #555, #333);
     border-width: 1px;
 }
 
-div.down { border-width: 0 1px 1px 1px;  }
+div.down {
+    border-width: 0 1px 1px 1px;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#555), to(#333));
+    background: -moz-linear-gradient(100% 100% 90deg, #333, #555);
+}
 
 div.sdown {
     -webkit-transform-origin: 0% 0%;
     -moz-transform-origin: 0% 0%;
-    -webkit-transform: rotate3d(1,0,0,90deg) skew(-7deg, 0deg);
-    -moz-transform: scaley(0) skew(-7deg, 0deg);
+    -webkit-transform: rotate3d(1,0,0,90deg) skew(-8deg, 0deg);
+    -moz-transform: scaley(0) skew(-8deg, 0deg);
 }
