@@ -9,7 +9,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         boxW,
         boxH,
         psdelay = 5000,
-        loopcount = 0,
         cols = 21,
         rows = 5,
         page = 0,
@@ -222,42 +221,6 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
         };
     }
 
-    function loopThroughNoAnimation(a, b, box, c) {
-        var tmpStart, tmpEnd, loopthis, a1, c2, index;
-        a1 = box.find("div#1 > div.up > div.text > span");
-        c2 = box.find("div#3 > div.down > div.text > span");
-
-        index = getIndex(a, b);
-        tmpStart = index.tmpStart;
-        tmpEnd = index.tmpEnd;
-        loopthis = index.loopthis;
-
-        if (strloop[c] !== 0 && strloop[c] !== undefined) {
-            clearInterval(strloop[c]);
-            strloop[c] = 0;
-            loopcount = loopcount - 1;
-        }
-        loopcount = loopcount + 1;
-        strloop[c] = setInterval(function () {
-            a1.text(loopthis.charAt(tmpStart));
-            c2.text(loopthis.charAt(tmpStart));
-            tmpStart = tmpStart + 1;
-            if (tmpStart === tmpEnd + 1) {
-                clearInterval(strloop[c]);
-                strloop[c] = 0;
-                loopcount = loopcount - 1;
-                if (loopcount === 0 && loop) {
-                    playloop = setTimeout(function () {
-                        ns.fwdPage();
-                    }, psdelay);
-                }
-            }
-            if (tmpStart > loopthis.length - 1) {
-                tmpStart = 0;
-            }
-        }, 500);
-    }
-
     function displayText(text, r, c) {
         var a, b, j, $box, index, tmpStart, tmpEnd, loopthis, len;
 
@@ -270,11 +233,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             if ($.trim(b) !== '') {
                 $box.removeClass("page_" + prv).addClass("page_" + curr);
                 if (a !== b) {
-                    if (!Modernizr.csstransforms || !Modernizr.csstransitions) {
-                        loopThroughNoAnimation(a, b, $box, r * cols + c);
-                    } else {
-                        $box.addClass('loop');
-                    }
+                    $box.addClass('loop');
                 }
             }
             index = getIndex(a, b);
@@ -287,7 +246,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
     }
 
     function clearPage(flag) {
-        var $box, a, tmpStart, tmpEnd, index, loopthis, s, d,
+        var $box, a, tmpStart, tmpEnd, index, loopthis,
             bool = $('div#da, div#db').hasClass('sa'),
             support = !Modernizr.csstransforms || !Modernizr.csstransitions;
 
@@ -295,37 +254,60 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             $box = $(this);
             a = $.trim($box.find('div#1 > div.up > div.text > span').text()).toUpperCase();
             $box.removeClass("page_" + flag);
-            if (support) {
-                d = $box.attr('id').split('_')[1];
-                s = $box.parent().attr('id').split('_')[1];
-                loopThroughNoAnimation(a, ' ', $box, parseInt(s, 10) * cols + parseInt(d, 10));
-            } else {
-                $box.addClass('loop');
-                index = getIndex(a, ' ');
-                tmpStart = index.tmpStart;
-                tmpEnd = index.tmpEnd;
-                loopthis = index.loopthis;
-                $box.data('data', { 'start': tmpStart, 'end': tmpEnd, 'loop': loopthis });
-            }
+            $box.addClass('loop');
+            index = getIndex(a, ' ');
+            tmpStart = index.tmpStart;
+            tmpEnd = index.tmpEnd;
+            loopthis = index.loopthis;
+            $box.data('data', { 'start': tmpStart, 'end': tmpEnd, 'loop': loopthis });
         });
-
-        $('div.loop').each(function (a, b) {
-            var $that = $(this),
-                loopthis = $.data(b, 'data').loop,
-                ctr = $.data(b, 'data').start;
-            if ($.trim($that.find("div#1 > div.up > div.text > span").text())) {
-                ctr = ctr + 1;
-                if (ctr > loopthis.length) {
-                    ctr = 0;
+        if (support) {
+            clearInterval(strloop);
+            strloop = setInterval(function () {
+                $('div.loop').each(function (a, b) {
+                    var $that = $(this),
+                        loopthis = $.data(b, 'data').loop,
+                        ctr = $.data(b, 'data').start;
+                    $that.find("div#1 > div.up > div.text > span, div#3 > div.down > div.text > span").text(loopthis.charAt(ctr));
+                    if (ctr === $.data(b, 'data').end) {
+                        $that.removeClass('loop').addClass('tmp');
+                    } else {
+                        ctr = ctr + 1;
+                        if (ctr > loopthis.length) {
+                            ctr = 0;
+                        }
+                        $.data(b, 'data').start = ctr;
+                    }
+                });
+                if (!$('div.loop').length) {
+                    clearInterval(strloop);
+                    if (loop) {
+                        playloop = setTimeout(function () {
+                            ns.fwdPage();
+                        }, psdelay);
+                    }
+                    return;
                 }
+            }, 250);
+        } else {
+            $('div.loop').each(function (a, b) {
+                var $that = $(this),
+                    loopthis = $.data(b, 'data').loop,
+                    ctr = $.data(b, 'data').start;
+                if ($.trim($that.find("div#1 > div.up > div.text > span").text())) {
+                    ctr = ctr + 1;
+                    if (ctr > loopthis.length) {
+                        ctr = 0;
+                    }
+                }
+                $that.find('div#3 > div.up > div.text > span').text(loopthis.charAt(ctr));
+                $.data(b, 'data').start = ctr;
+            });
+            $('div.loop.skip').removeClass('skip');
+            $('div.loop:not(.animate)').addClass('skip');
+            if (!bool) {
+                $('div#da').addClass('sa');
             }
-            $that.find('div#3 > div.up > div.text > span').text(loopthis.charAt(ctr));
-            $.data(b, 'data').start = ctr;
-        });
-        $('div.loop.skip').removeClass('skip');
-        $('div.loop:not(.animate)').addClass('skip');
-        if (!bool) {
-            $('div#da').addClass('sa');
         }
     }
 
@@ -398,7 +380,7 @@ namespace.lookup('com.pageforest.flipper').defineOnce(function (ns) {
             fwdPage();
         }
         loop = true;
-        if ($('div.loop').length === 0 && loopcount === 0 && loop) {
+        if ($('div.loop').length === 0 && loop) {
             playloop = setTimeout(function () {
                 fwdPage();
             }, psdelay);
